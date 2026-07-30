@@ -1,8 +1,9 @@
 const db = require("../config/db");
 const axios = require("axios");
 const ss = require("simple-statistics");
+const { performCheckin } = require("./streakController");
 
-const AI_MONITORING_URL = process.env.AI_MONITORING_API_URL || "https://itzvynn-glucare-90-day-monitoring.hf.space";
+const AI_BASE_URL = process.env.AI_BASE_URL || "https://itzvynn-glucare-backend.hf.space";
 
 // Helper: Unlock Achievement
 const unlockAchievement = async (user_id, achievement_code) => {
@@ -81,7 +82,7 @@ const getPlanData = async (req, res) => {
         // Hitungan hari otomatis dihitung akurat oleh MySQL dari diff_days
         const currentDay = Math.min(Math.max(user.diff_days + 1, 1), 90);
 
-        // Get Today's tracking
+        // Get Today's tracking specifically for current day_index
         const [daily] = await db.promise().query(
             "SELECT * FROM daily_tracking WHERE user_id = ? AND day_index = ?",
             [user_id, currentDay]
@@ -99,6 +100,12 @@ const getPlanData = async (req, res) => {
             [user_id]
         );
 
+        // Get Streak Data
+        const [streakData] = await db.promise().query(
+            "SELECT current_streak, longest_streak FROM user_streaks WHERE user_id = ?",
+            [user_id]
+        );
+
         const level = Math.floor(user.xp / 500) + 1;
 
         return res.status(200).json({
@@ -107,8 +114,8 @@ const getPlanData = async (req, res) => {
             xp: user.xp,
             level: level,
             xpToNextLevel: 500 - (user.xp % 500),
-            currentStreak: user.current_streak,
-            bestStreak: user.best_streak,
+            currentStreak: streakData.length > 0 ? streakData[0].current_streak : user.current_streak,
+            bestStreak: streakData.length > 0 ? streakData[0].longest_streak : user.best_streak,
             targets: {
                 sleep: user.sleep_target_hours,
                 walking: user.walking_target_minutes,
@@ -138,14 +145,27 @@ const submitDailyTracking = async (req, res) => {
         );
 
         if (existing.length > 0) {
-            return res.status(400).json({ message: "Anda sudah melakukan tracking untuk hari ini" });
+            try {
+                const streakResult = await performCheckin(user_id, "Asia/Jakarta");
+                await db.promise().query(
+                    "UPDATE users SET current_streak = ?, best_streak = ? WHERE id = ?",
+                    [streakResult.current_streak, streakResult.longest_streak, user_id]
+                );
+                return res.status(200).json({
+                    message: "Tracking hari ini sudah tersimpan dan streak aktif",
+                    streak: streakResult
+                });
+            } catch (e) {
+                console.error("Sync streak on duplicate tracking error:", e);
+                return res.status(400).json({ message: "Anda sudah melakukan tracking untuk hari ini" });
+            }
         }
 
         // Hitung XP
         let xpGained = 0;
-        if (sleep_hours !== undefined && sleep_hours !== null) xpGained += 10;
-        if (walking_minutes !== undefined && walking_minutes !== null) xpGained += 10;
-        if (nutrition_score !== undefined && nutrition_score !== null) xpGained += 10;
+        if (sleep_hours !== undefined && sleep_hours !== null) xpGained += 40;
+        if (walking_minutes !== undefined && walking_minutes !== null) xpGained += 40;
+        if (nutrition_score !== undefined && nutrition_score !== null) xpGained += 40;
 
         // Insert
         await db.promise().query(
@@ -153,28 +173,21 @@ const submitDailyTracking = async (req, res) => {
             [user_id, day, sleep_hours, walking_minutes, nutrition_score, xpGained]
         );
 
-        // Update Users (XP & Streak)
-        const [users] = await db.promise().query("SELECT xp, current_streak, best_streak FROM users WHERE id = ?", [user_id]);
-        let { xp, current_streak, best_streak } = users[0];
-
-        // Cek apakah user input kemarin (simplifikasi: kita tambah streak setiap input berhasil, tapi idealnya cek day - 1)
-        const [yesterday] = await db.promise().query(
-            "SELECT id FROM daily_tracking WHERE user_id = ? AND day_index = ?",
-            [user_id, day - 1]
-        );
-
-        if (day === 1 || yesterday.length > 0) {
-            current_streak += 1;
-        } else {
-            current_streak = 1; // Putus, mulai lagi dari 1
-        }
-
-        if (current_streak > best_streak) best_streak = current_streak;
+        // Update XP
+        const [users] = await db.promise().query("SELECT xp FROM users WHERE id = ?", [user_id]);
+        let { xp } = users[0];
         xp += xpGained;
+        await db.promise().query("UPDATE users SET xp = ? WHERE id = ?", [xp, user_id]);
 
+        // ── Streak: Pakai sistem baru (user_streaks) ────────────────────────
+        const streakResult = await performCheckin(user_id, "Asia/Jakarta");
+        const current_streak = streakResult.current_streak;
+        const best_streak = streakResult.longest_streak;
+
+        // Sinkronisasi ke kolom users untuk backward compatibility
         await db.promise().query(
-            "UPDATE users SET xp = ?, current_streak = ?, best_streak = ? WHERE id = ?",
-            [xp, current_streak, best_streak, user_id]
+            "UPDATE users SET current_streak = ?, best_streak = ? WHERE id = ?",
+            [current_streak, best_streak, user_id]
         );
 
         const newAchievements = [];
@@ -189,13 +202,11 @@ const submitDailyTracking = async (req, res) => {
         if (newLevel >= 5 && await unlockAchievement(user_id, "LEVEL_5")) newAchievements.push("LEVEL_5");
         if (newLevel >= 10 && await unlockAchievement(user_id, "LEVEL_10")) newAchievements.push("LEVEL_10");
 
-        // Forward AI (Obsolete/Removed)
-        // AI Endpoint sudah tidak dipakai lagi
-
         return res.status(200).json({
             xp_gained: xpGained,
             total_xp: xp,
             level: newLevel,
+            streak: streakResult,
             newAchievements
         });
     } catch (error) {
@@ -353,10 +364,48 @@ const processAssessment = async (req, res, totalDays) => {
             };
         }
 
-        const endpoint = totalDays === 30 ? "day30assessment" : "day90assessment";
+        const endpoint = totalDays === 30 ? "predict/day30" : "predict/day90";
         let aiResponseData = null;
 
-        // AI Endpoint sudah tidak dipakai lagi
+        try {
+            console.log(`[AI Assessment] Mengirim ke HuggingFace (${endpoint}):`, JSON.stringify(payload));
+            const aiResponse = await axios.post(`${AI_BASE_URL}/${endpoint}`, payload, { timeout: 30000 });
+            aiResponseData = aiResponse.data;
+            console.log(`[AI Assessment] Response dari HuggingFace:`, JSON.stringify(aiResponseData));
+
+            // Simpan ke analysis_results
+            const finalPayload = {
+                mode: totalDays === 30 ? "day30" : "day90",
+                aiResult: aiResponseData,
+                computed_stats: payload,
+                timestamp: new Date().toISOString()
+            };
+
+            const sqlUpsertAnalysis = `
+                INSERT INTO analysis_results (user_id, mode, result_data)
+                VALUES (?, ?, ?)
+            `;
+            await db.promise().query(sqlUpsertAnalysis, [user_id, finalPayload.mode, JSON.stringify(finalPayload)]);
+        } catch (aiError) {
+            console.error(`[AI Assessment] Gagal menghubungi HuggingFace (${endpoint}):`, aiError.response?.data || aiError.message);
+        }
+
+        // Simpan hasil ke database
+        let finalScore = totalDays === 30 ? 82 : 90; // Default or calculate from AI?
+        // Check if aiResponseData has score
+        if (aiResponseData && typeof aiResponseData === 'object' && aiResponseData.score !== undefined) {
+            finalScore = aiResponseData.score;
+        }
+
+        let riskLevel = aiResponseData?.risk_level || (totalDays === 30 ? "Medium" : "Low");
+        let summaryText = aiResponseData?.summary || `Evaluasi program ${totalDays} hari selesai.`;
+        let recommendationText = aiResponseData?.recommendations || "Pertahankan gaya hidup sehat.";
+        const rawData = JSON.stringify(aiResponseData);
+
+        await db.promise().query(
+            "INSERT INTO ai_evaluations (user_id, day_milestone, score, risk_level, summary, recommendation, raw_data) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            [user_id, totalDays, finalScore, riskLevel, summaryText, recommendationText, rawData]
+        );
 
         const bonusXp = totalDays === 30 ? 100 : 200;
         await db.promise().query("UPDATE users SET xp = xp + ? WHERE id = ?", [bonusXp, user_id]);
@@ -394,7 +443,7 @@ const getDailyTracking = async (req, res) => {
         return res.status(200).json({ data: rows });
     } catch (error) {
         console.error("Get Daily Tracking Error:", error);
-        return res.status(500).json({ message: "Gagal memuat data tracking", error: error.message });
+        return res.status(500).json({ message: "Gagal mengambil data tracking harian", error: error.message });
     }
 };
 
@@ -413,6 +462,44 @@ const getGlucoseTracking = async (req, res) => {
     }
 };
 
+// 9. Get AI Evaluations History
+const getAiEvaluations = async (req, res) => {
+    try {
+        const { user_id } = req.params;
+        const [evals] = await db.promise().query(
+            "SELECT * FROM ai_evaluations WHERE user_id = ? ORDER BY created_at DESC",
+            [user_id]
+        );
+        return res.status(200).json(evals);
+    } catch (error) {
+        return res.status(500).json({ message: "Error fetching evals", error: error.message });
+    }
+};
+
+// 10. Cancel Plan
+const cancelPlan = async (req, res) => {
+    try {
+        const { user_id } = req.body;
+        if (!user_id) return res.status(400).json({ message: "User ID required" });
+
+        // Hapus status enroll
+        await db.promise().query(
+            "UPDATE users SET plan_start_date = NULL WHERE id = ?",
+            [user_id]
+        );
+
+        // Hapus histori tracking untuk mereset
+        await db.promise().query("DELETE FROM daily_tracking WHERE user_id = ?", [user_id]);
+        await db.promise().query("DELETE FROM glucose_tracking WHERE user_id = ?", [user_id]);
+        await db.promise().query("DELETE FROM ai_evaluations WHERE user_id = ?", [user_id]);
+
+        return res.status(200).json({ message: "Program berhasil dibatalkan dan di-reset" });
+    } catch (error) {
+        console.error("Cancel Plan Error:", error);
+        return res.status(500).json({ message: "Gagal membatalkan program", error: error.message });
+    }
+};
+
 module.exports = {
     enrollPlan,
     getPlanData,
@@ -421,5 +508,7 @@ module.exports = {
     assessment30,
     assessment90,
     getDailyTracking,
-    getGlucoseTracking
+    getGlucoseTracking,
+    getAiEvaluations,
+    cancelPlan
 };

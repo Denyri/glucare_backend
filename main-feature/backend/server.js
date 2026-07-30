@@ -3,6 +3,8 @@ require("dotenv").config();
 const express = require("express");
 const passport = require("passport");
 const cors = require("cors");
+const fs = require("fs");
+const swaggerUi = require("swagger-ui-express");
 require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
@@ -13,6 +15,9 @@ const monitoringRoutes = require("./routes/monitoringRoutes");
 const dailyLogsRoutes = require("./routes/dailyLogsRoutes");
 const aiRoutes = require("./routes/aiRoutes");
 const planRoutes = require("./routes/planRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
+const streakRoutes = require("./routes/streakRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 const app = express();
 
@@ -29,16 +34,27 @@ app.use("/api/monitoring", monitoringRoutes);
 app.use("/api/daily-logs", dailyLogsRoutes);
 app.use("/api/ai", aiRoutes);
 app.use("/api/plan", planRoutes);
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/streak", streakRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 app.use("/uploads", express.static("uploads"));
 
+if (fs.existsSync('./swagger_output.json')) {
+    const swaggerDocument = require('./swagger_output.json');
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+}
 
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
     res.send("Backend gue");
 });
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+if (require.main === module) {
+    app.listen(PORT, '0.0.0.0', () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+module.exports = app;

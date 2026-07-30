@@ -4,6 +4,150 @@ const db = require("../config/db");
 const AI_BASE_URL = process.env.AI_BASE_URL || "https://itzvynn-glucare-backend.hf.space";
 
 // ─────────────────────────────────────────────────────────────
+// UI Generators for Backend-Driven UI
+// ─────────────────────────────────────────────────────────────
+function generateClinicalUI(aiResult, clinicalParams) {
+    let aiScore = 25;
+    let riskLevel = "Normal";
+
+    if (aiResult && aiResult.predict_proba) {
+        let proba = aiResult.predict_proba;
+        if (Array.isArray(proba) && proba.length > 0 && Array.isArray(proba[0])) {
+            proba = proba[0];
+        }
+        if (Array.isArray(proba) && proba.length >= 3) {
+            aiScore = Math.round((proba[1] + proba[2]) * 100);
+        }
+    }
+
+    if (aiScore >= 60) riskLevel = "Diabetes";
+    else if (aiScore >= 30) riskLevel = "Prediabetes";
+
+    let riskStatus = "Rendah";
+    let riskDescription = "Normal / Aman";
+    let riskColor = "0xFF10B981"; // Green (Flutter format)
+
+    if (riskLevel === "Diabetes") {
+        riskStatus = "Tinggi";
+        riskDescription = "Indikasi Diabetes";
+        riskColor = "0xFFEF4444"; // Red
+    } else if (riskLevel === "Prediabetes") {
+        riskStatus = "Sedang";
+        riskDescription = "Indikasi Prediabetes";
+        riskColor = "0xFFF59E0B"; // Orange
+    }
+
+    let faktorRisiko = [];
+    const gdpVal = clinicalParams.glucose_fasting || 0;
+    const bmiVal = clinicalParams.bmi || 0;
+    const tgHdl = clinicalParams.tg_hdl_ratio || 0;
+    const sistolikVal = clinicalParams.bp_systolic || 0;
+    const diastolikVal = clinicalParams.bp_diastolic || 0;
+    const lingkarPinggang = clinicalParams.waist_cm || 0;
+
+    if (gdpVal >= 126) faktorRisiko.push({ text: `Gula Darah Puasa (${Math.round(gdpVal)} mg/dL) mengindikasikan level Diabetes.`, isWarning: true });
+    else if (gdpVal >= 100) faktorRisiko.push({ text: `Gula Darah Puasa (${Math.round(gdpVal)} mg/dL) berada di zona Prediabetes.`, isWarning: true });
+
+    if (bmiVal >= 27.5) faktorRisiko.push({ text: `Kategori BMI Obesitas (${bmiVal.toFixed(1)}) meningkatkan risiko metabolik secara signifikan.`, isWarning: true });
+    else if (bmiVal >= 23) faktorRisiko.push({ text: `Kategori BMI Overweight (${bmiVal.toFixed(1)}) memicu risiko metabolik.`, isWarning: true });
+
+    if (tgHdl >= 3) faktorRisiko.push({ text: `Rasio TG/HDL tinggi (${tgHdl.toFixed(1)}) mengindikasikan kemungkinan resistensi insulin.`, isWarning: true });
+    if (sistolikVal >= 130 || diastolikVal >= 85) faktorRisiko.push({ text: `Tekanan darah (${Math.round(sistolikVal)}/${Math.round(diastolikVal)} mmHg) berada di atas rentang optimal.`, isWarning: true });
+
+    if (lingkarPinggang > 90) faktorRisiko.push({ text: `Lingkar pinggang (${Math.round(lingkarPinggang)} cm) berisiko tinggi.`, isWarning: true });
+
+    if (faktorRisiko.length === 0) faktorRisiko.push({ text: 'Tidak ada parameter klinis spesifik yang memicu risiko tinggi.', isWarning: false });
+
+    let insight = "Analisis AI menunjukkan metabolisme glukosa dan parameter kesehatan Anda dalam rentang optimal. Pertahankan gaya hidup sehat untuk pencegahan jangka panjang.";
+    if (riskLevel === "Diabetes") {
+        insight = "Analisis AI mendeteksi parameter yang mengarah pada intoleransi glukosa atau diabetes. Intervensi gaya hidup terstruktur dan pendampingan rutin disarankan untuk mengendalikan glukosa darah.";
+    } else if (riskLevel === "Prediabetes") {
+        insight = "Analisis AI mendeteksi tanda dini resistensi insulin (Prediabetes). Anda berada di fase emas: dengan Program 90 Hari menjaga pola tidur, aktivitas fisik, dan nutrisi, kadar gula darah sangat berpeluang kembali normal.";
+    }
+
+    return {
+        score: aiScore,
+        riskLevel: riskLevel,
+        riskStatus: riskStatus,
+        riskDescription: riskDescription,
+        riskColor: riskColor,
+        faktorRisiko: faktorRisiko,
+        insight: aiResult?.insight || aiResult?.explanation || aiResult?.summary || insight,
+        cta: aiResult?.cta || "Jaga pola makan dan aktivitas fisik dengan konsisten."
+    };
+}
+
+function generateQuestionnaireUI(aiResult, questionnaireParams) {
+    let aiScore = 25;
+    let riskLevel = "Normal";
+
+    if (aiResult && aiResult.predict_proba) {
+        let proba = aiResult.predict_proba;
+        if (Array.isArray(proba) && proba.length > 0 && Array.isArray(proba[0])) {
+            proba = proba[0];
+        }
+        if (Array.isArray(proba) && proba.length >= 3) {
+            aiScore = Math.round((proba[1] + proba[2]) * 100);
+        }
+    } else {
+        let pred = aiResult?.prediction;
+        if (Array.isArray(pred) && pred.length > 0) pred = pred[0];
+        if (pred == 2 || pred == "Diabetes") aiScore = 85;
+        else if (pred == 1 || pred == "Prediabetes") aiScore = 55;
+    }
+
+    if (aiScore >= 60) riskLevel = "Diabetes";
+    else if (aiScore >= 30) riskLevel = "Prediabetes";
+
+    let riskStatus = "Rendah";
+    let riskDescription = "Normal / Aman";
+    let riskColor = "0xFF10B981"; // Green
+
+    if (riskLevel === "Diabetes") {
+        riskStatus = "Tinggi";
+        riskDescription = "Indikasi Diabetes";
+        riskColor = "0xFFEF4444"; // Red
+    } else if (riskLevel === "Prediabetes") {
+        riskStatus = "Sedang";
+        riskDescription = "Indikasi Prediabetes";
+        riskColor = "0xFFF59E0B"; // Orange
+    }
+
+    let faktorRisiko = [];
+    const bmiCat = questionnaireParams.bmi_category || 0;
+    const waistCat = questionnaireParams.waist_category || 0;
+    const hyper = questionnaireParams.hypertension || 0;
+    const owHist = questionnaireParams.overweight_history || 0;
+
+    if (bmiCat === 1) faktorRisiko.push({ text: 'Kategori BMI Overweight', isWarning: true });
+    else if (bmiCat === 2) faktorRisiko.push({ text: 'Kategori BMI Obesitas', isWarning: true });
+    
+    if (waistCat === 1) faktorRisiko.push({ text: 'Lingkar pinggang berisiko', isWarning: true });
+    if (hyper === 1) faktorRisiko.push({ text: 'Memiliki hipertensi', isWarning: true });
+    if (owHist === 1) faktorRisiko.push({ text: 'Ada riwayat kelebihan berat badan', isWarning: true });
+
+    if (faktorRisiko.length === 0) faktorRisiko.push({ text: 'Gaya hidup relatif sehat', isWarning: false });
+
+    let insight = "Analisis AI menunjukkan parameter kebiasaan dan profil kesehatan Anda dalam rentang optimal. Pertahankan pola hidup aktif dan seimbang.";
+    if (riskLevel === "Diabetes") {
+        insight = "Analisis AI berdasarkan pola kebiasaan mendeteksi risiko tinggi terhadap gangguan metabolisme glukosa. Mulai perubahan kebiasaan secara disiplin untuk menurunkan risiko komplikasi.";
+    } else if (riskLevel === "Prediabetes") {
+        insight = "Analisis AI mendeteksi risiko menengah (Prediabetes) berdasarkan kebiasaan dan parameter fisik Anda. Program gaya hidup 90 Hari akan membantu mengembalikan metabolisme tubuh Anda ke jalur yang sehat.";
+    }
+
+    return {
+        score: aiScore,
+        riskLevel: riskLevel,
+        riskStatus: riskStatus,
+        riskDescription: riskDescription,
+        riskColor: riskColor,
+        faktorRisiko: faktorRisiko,
+        insight: aiResult?.insight || aiResult?.explanation || aiResult?.summary || insight,
+        cta: aiResult?.cta || "Jaga pola makan dan aktivitas fisik dengan konsisten."
+    };
+}
+
+// ─────────────────────────────────────────────────────────────
 // POST /api/ai/predict/clinical — Prediksi Mode Klinis / Lab
 // ─────────────────────────────────────────────────────────────
 const predictClinical = async (req, res) => {
@@ -105,12 +249,15 @@ const predictClinical = async (req, res) => {
         });
 
         // Simpan hasil prediksi AI ke database (Tabel analysis_results)
+        const ui_data = generateClinicalUI(aiResult, clinicalParams);
+        
         const finalPayload = {
             mode: "clinical",
             aiResult: aiResult,
+            ui_data: ui_data,
             clinicalParams: {
                 ...clinicalParams,
-                hba1c: parseFloat(hba1c) || 0,
+                hba1c: 0,
                 berat_badan: bb,
                 tinggi_badan: parseFloat(tinggi_badan) || 0,
                 riwayat_keluarga: riwayat_keluarga || "",
@@ -122,9 +269,6 @@ const predictClinical = async (req, res) => {
         const sqlUpsertAnalysis = `
             INSERT INTO analysis_results (user_id, mode, result_data)
             VALUES (?, 'clinical', ?)
-            ON DUPLICATE KEY UPDATE
-                mode = VALUES(mode),
-                result_data = VALUES(result_data)
         `;
         db.query(sqlUpsertAnalysis, [user_id, JSON.stringify(finalPayload)], (err) => {
             if (err) console.error("[AI Clinical] Gagal simpan analysis_results:", err.message);
@@ -230,9 +374,12 @@ const predictQuestionnaire = async (req, res) => {
         });
 
         // Simpan hasil prediksi AI ke database (Tabel analysis_results)
+        const ui_data = generateQuestionnaireUI(aiResult, questionnaireParams);
+        
         const finalPayload = {
             mode: "questionnaire",
             aiResult: aiResult,
+            ui_data: ui_data,
             answers: answers,
             timestamp: new Date().toISOString()
         };
@@ -240,9 +387,6 @@ const predictQuestionnaire = async (req, res) => {
         const sqlUpsertAnalysis = `
             INSERT INTO analysis_results (user_id, mode, result_data)
             VALUES (?, 'questionnaire', ?)
-            ON DUPLICATE KEY UPDATE
-                mode = VALUES(mode),
-                result_data = VALUES(result_data)
         `;
         db.query(sqlUpsertAnalysis, [user_id, JSON.stringify(finalPayload)], (err) => {
             if (err) console.error("[AI Kuesioner] Gagal simpan analysis_results:", err.message);
@@ -269,7 +413,7 @@ const getLatestAnalysisResult = async (req, res) => {
         }
 
         const [results] = await db.promise().query(
-            "SELECT mode, result_data, created_at FROM analysis_results WHERE user_id = ?",
+            "SELECT mode, result_data, created_at FROM analysis_results WHERE user_id = ? ORDER BY created_at DESC LIMIT 1",
             [userId]
         );
 
@@ -300,4 +444,43 @@ const getLatestAnalysisResult = async (req, res) => {
     }
 };
 
-module.exports = { predictClinical, predictQuestionnaire, getLatestAnalysisResult };
+// GET /api/ai/history/:userId - Mengambil semua riwayat analisis
+const getAnalysisHistory = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        if (!userId) {
+            return res.status(400).json({ message: "User ID diperlukan" });
+        }
+
+        const [results] = await db.promise().query(
+            "SELECT id, mode, result_data, created_at FROM analysis_results WHERE user_id = ? ORDER BY created_at DESC",
+            [userId]
+        );
+
+        const history = results.map(data => {
+            let payload = {};
+            try {
+                payload = typeof data.result_data === 'string' ? JSON.parse(data.result_data) : data.result_data;
+            } catch(e) {
+                payload = data.result_data;
+            }
+            return {
+                id: data.id,
+                mode: data.mode,
+                ...payload,
+                saved_at: data.created_at
+            };
+        });
+
+        return res.status(200).json(history);
+
+    } catch (error) {
+        console.error("[AI History] Error:", error.message);
+        return res.status(500).json({
+            message: "Gagal mengambil riwayat analisis",
+            error: error.message
+        });
+    }
+};
+
+module.exports = { predictClinical, predictQuestionnaire, getLatestAnalysisResult, getAnalysisHistory };

@@ -10,7 +10,10 @@ const upload = require("../uploads/uploads");
 const passport = require("passport");
 
 
-router.post("/facebook", facebookLogin);
+router.post("/facebook", (req, res, next) => {
+    // #swagger.ignore = true
+    next();
+}, facebookLogin);
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/google", googleLogin);
