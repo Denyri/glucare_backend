@@ -25,6 +25,12 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use((err, req, res, next) => {
+    if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+        return res.status(400).json({ status: false, message: "Format Body JSON tidak valid" });
+    }
+    next(err);
+});
 app.use(passport.initialize());
 require("./config/passport")(passport);
 
