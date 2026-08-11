@@ -5,8 +5,8 @@ const doc = {
     title: 'GluCare API',
     description: 'API Documentation for GluCare Backend',
   },
-  host: 'localhost:5000',
-  schemes: ['http'],
+  host: 'glucare.my.id',
+  schemes: ['https', 'http'],
   securityDefinitions: {
       bearerAuth: {
           type: 'apiKey',

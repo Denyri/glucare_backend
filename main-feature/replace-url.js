@@ -24,5 +24,5 @@ function findAndReplace(dir, searchStr, replaceStr) {
 }
 
 const targetDir = path.join(__dirname, 'main-featureGlucare');
-findAndReplace(targetDir, 'http://43.156.16.175:5000', 'https://nusahealth.infinitelearningstudent.id');
+findAndReplace(targetDir, 'https://nusahealth.infinitelearningstudent.id', 'https://glucare.my.id');
 console.log('Selesai!');

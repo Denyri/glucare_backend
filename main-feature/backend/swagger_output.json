@@ -5,9 +5,10 @@
     "description": "API Documentation for GluCare Backend",
     "version": "1.0.0"
   },
-  "host": "localhost:5000",
+  "host": "glucare.my.id",
   "basePath": "/",
   "schemes": [
+    "https",
     "http"
   ],
   "securityDefinitions": {
@@ -19,6 +20,16 @@
     }
   },
   "paths": {
+    "/ping": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/": {
       "get": {
         "description": "",
