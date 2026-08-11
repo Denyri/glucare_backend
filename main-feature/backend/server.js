@@ -43,6 +43,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/uploads", express.static("uploads"));
 
 try {
+    const swaggerPath = path.join(__dirname, "swagger_output.json");
     const swaggerDocument = require(swaggerPath);
     app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
     console.log("Swagger UI mounted successfully at /api-docs");
