@@ -42,10 +42,12 @@ app.use("/api/notifications", notificationRoutes);
 
 app.use("/uploads", express.static("uploads"));
 
-const swaggerPath = path.join(__dirname, "swagger_output.json");
-if (fs.existsSync(swaggerPath)) {
+try {
     const swaggerDocument = require(swaggerPath);
     app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+    console.log("Swagger UI mounted successfully at /api-docs");
+} catch (swaggerErr) {
+    console.error("Swagger UI failed to load:", swaggerErr.message);
 }
 
 app.get("/", (req, res) => {
