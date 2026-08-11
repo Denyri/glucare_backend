@@ -45,12 +45,15 @@ app.use("/uploads", express.static("uploads"));
 try {
     const swaggerPath = path.join(__dirname, "swagger_output.json");
     const swaggerDocument = require(swaggerPath);
-    app.use("/api-docs", swaggerUi.serve);
-    app.get("/api-docs", swaggerUi.setup(swaggerDocument));
+    app.use("/api-docs", swaggerUi.serveFiles(swaggerDocument), swaggerUi.setup(swaggerDocument));
     console.log("Swagger UI mounted successfully at /api-docs");
 } catch (swaggerErr) {
     console.error("Swagger UI failed to load:", swaggerErr.message);
 }
+
+app.get("/ping", (req, res) => {
+    res.send("pong 123");
+});
 
 app.get("/", (req, res) => {
     res.send("Backend gue");
