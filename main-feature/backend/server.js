@@ -19,6 +19,8 @@ const dashboardRoutes = require("./routes/dashboardRoutes");
 const streakRoutes = require("./routes/streakRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 
+const path = require("path");
+
 const app = express();
 
 app.use(cors());
@@ -40,9 +42,10 @@ app.use("/api/notifications", notificationRoutes);
 
 app.use("/uploads", express.static("uploads"));
 
-if (fs.existsSync('./swagger_output.json')) {
-    const swaggerDocument = require('./swagger_output.json');
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+const swaggerPath = path.join(__dirname, "swagger_output.json");
+if (fs.existsSync(swaggerPath)) {
+    const swaggerDocument = require(swaggerPath);
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 }
 
 app.get("/", (req, res) => {
@@ -52,7 +55,7 @@ app.get("/", (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 if (require.main === module) {
-    app.listen(PORT, '0.0.0.0', () => {
+    app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
     });
 }
