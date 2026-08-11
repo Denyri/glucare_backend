@@ -4,7 +4,7 @@ import Button from "../components/Button";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSidebar } from "../hooks/useSidebar";
 import { useState, useEffect } from "react";
-import api from "../services/api";
+import api from "../api";
 
 const HasilAnalisis = () => {
     const navigate = useNavigate();
