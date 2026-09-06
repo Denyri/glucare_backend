@@ -1,0 +1,30 @@
+{
+  "model_name": "Random Forest",
+  "features": [
+    "glucose_fasting",
+    "age",
+    "waist_cm",
+    "bmi",
+    "hdl",
+    "triglycerides",
+    "bp_systolic",
+    "bp_diastolic",
+    "gender",
+    "map_pressure",
+    "tg_hdl_ratio"
+  ],
+  "n_features": 11,
+  "classes": {
+    "0": "Normal",
+    "1": "Pre-diabetes"
+  },
+  "risk_level": {
+    "0": "low",
+    "1": "high"
+  },
+  "threshold": 0.5,
+  "metrics": {
+    "auc_roc": 0.9587,
+    "f1_score": 0.9111
+  }
+}

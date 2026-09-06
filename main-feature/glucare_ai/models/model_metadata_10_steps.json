@@ -1,0 +1,27 @@
+{
+  "model_name": "XGBoost (Calibrated)",
+  "feature_names": [
+    "age",
+    "gender",
+    "weight",
+    "bmi",
+    "waist_cm",
+    "bp_systolic",
+    "bp_diastolic",
+    "map_pressure",
+    "glucose_fasting",
+    "hdl",
+    "triglycerides",
+    "tg_hdl_ratio"
+  ],
+  "metrics": {
+    "accuracy": 0.9312977099236641,
+    "recall": 0.8163265306122449,
+    "precision": 1.0,
+    "f1": 0.898876404494382,
+    "roc_auc": 0.9688899950223991,
+    "brier_score": 0.04960746220586546
+  },
+  "train_samples": 522,
+  "test_samples": 131
+}
