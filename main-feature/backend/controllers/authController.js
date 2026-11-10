@@ -73,7 +73,6 @@ const loginUser = (req, res) => {
         }
 
         if (user.is_completed === 0) {
-
             const token = jwt.sign(
                 { id: user.id, email: user.email },
                 process.env.JWT_SECRET,
@@ -89,29 +88,39 @@ const loginUser = (req, res) => {
                     fullname: user.fullname,
                     email: user.email,
                     is_completed: user.is_completed,
+                    has_analysis: 0,
                     gender: user.gender,
                     birth_date: user.birth_date
                 }
             });
         }
 
-        const token = jwt.sign(
-            { id: user.id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "1d" }
-        );
+        // Cek apakah pengguna sudah memiliki hasil skrining AI
+        db.query("SELECT id FROM analysis_results WHERE user_id = ? LIMIT 1", [user.id], (aErr, aRows) => {
+            const hasAnalysis = Boolean(aRows && aRows.length > 0);
+            const redirectTo = hasAnalysis ? "/beranda" : "/analisis";
 
-        res.status(200).json({
-            message: "Login berhasil",
-            token,
-            user: {
-                id: user.id,
-                fullname: user.fullname,
-                email: user.email,
-                is_completed: user.is_completed,
-                gender: user.gender,
-                birth_date: user.birth_date
-            },
+            const token = jwt.sign(
+                { id: user.id, email: user.email },
+                process.env.JWT_SECRET,
+                { expiresIn: "1d" }
+            );
+
+            res.status(200).json({
+                message: "Login berhasil",
+                redirectTo: redirectTo,
+                hasAnalysis: hasAnalysis,
+                token,
+                user: {
+                    id: user.id,
+                    fullname: user.fullname,
+                    email: user.email,
+                    is_completed: user.is_completed,
+                    has_analysis: hasAnalysis ? 1 : 0,
+                    gender: user.gender,
+                    birth_date: user.birth_date
+                },
+            });
         });
     });
 };
@@ -153,7 +162,12 @@ const inputData = (req, res) => {
 
                     res.status(200).json({
                         message: "Profile berhasil dilengkapi",
-                        user: userWithoutPassword,
+                        redirectTo: "/analisis",
+                        user: {
+                            ...userWithoutPassword,
+                            is_completed: 1,
+                            has_analysis: 0
+                        },
                     });
                 }
             );
@@ -301,18 +315,41 @@ const googleLogin = async (req, res) => {
                     { expiresIn: "1d" }
                 );
 
-                return res.status(200).json({
-                    message: "Login berhasil",
-                    token: jwtToken,
-                    user: {
-                        id: user.id,
-                        fullname: user.fullname,
-                        email: user.email,
-                        is_completed: user.is_completed,
-                        profile_image: user.profile_image,
-                        gender: user.gender,
-                        birth_date: user.birth_date
-                    }
+                if (user.is_completed === 0) {
+                    return res.status(200).json({
+                        message: "Lengkapi data profil terlebih dahulu",
+                        redirectTo: "/input",
+                        token: jwtToken,
+                        user: {
+                            id: user.id,
+                            fullname: user.fullname,
+                            email: user.email,
+                            is_completed: 0,
+                            has_analysis: 0,
+                            profile_image: user.profile_image,
+                            gender: user.gender,
+                            birth_date: user.birth_date
+                        }
+                    });
+                }
+
+                db.query("SELECT id FROM analysis_results WHERE user_id = ? LIMIT 1", [user.id], (gaErr, gaRows) => {
+                    const hasAnalysis = Boolean(gaRows && gaRows.length > 0);
+                    return res.status(200).json({
+                        message: "Login berhasil",
+                        redirectTo: hasAnalysis ? "/beranda" : "/analisis",
+                        token: jwtToken,
+                        user: {
+                            id: user.id,
+                            fullname: user.fullname,
+                            email: user.email,
+                            is_completed: user.is_completed,
+                            has_analysis: hasAnalysis ? 1 : 0,
+                            profile_image: user.profile_image,
+                            gender: user.gender,
+                            birth_date: user.birth_date
+                        }
+                    });
                 });
             } else {
                 // User does not exist, register them
@@ -387,18 +424,41 @@ const facebookLogin = async (req, res) => {
                     { expiresIn: "1d" }
                 );
 
-                return res.status(200).json({
-                    message: "Login berhasil",
-                    token: jwtToken,
-                    user: {
-                        id: user.id,
-                        fullname: user.fullname,
-                        email: user.email,
-                        is_completed: user.is_completed,
-                        profile_image: user.profile_image,
-                        gender: user.gender,
-                        birth_date: user.birth_date
-                    }
+                if (user.is_completed === 0) {
+                    return res.status(200).json({
+                        message: "Lengkapi data profil terlebih dahulu",
+                        redirectTo: "/input",
+                        token: jwtToken,
+                        user: {
+                            id: user.id,
+                            fullname: user.fullname,
+                            email: user.email,
+                            is_completed: 0,
+                            has_analysis: 0,
+                            profile_image: user.profile_image,
+                            gender: user.gender,
+                            birth_date: user.birth_date
+                        }
+                    });
+                }
+
+                db.query("SELECT id FROM analysis_results WHERE user_id = ? LIMIT 1", [user.id], (faErr, faRows) => {
+                    const hasAnalysis = Boolean(faRows && faRows.length > 0);
+                    return res.status(200).json({
+                        message: "Login berhasil",
+                        redirectTo: hasAnalysis ? "/beranda" : "/analisis",
+                        token: jwtToken,
+                        user: {
+                            id: user.id,
+                            fullname: user.fullname,
+                            email: user.email,
+                            is_completed: user.is_completed,
+                            has_analysis: hasAnalysis ? 1 : 0,
+                            profile_image: user.profile_image,
+                            gender: user.gender,
+                            birth_date: user.birth_date
+                        }
+                    });
                 });
             } else {
                 // User does not exist, register them

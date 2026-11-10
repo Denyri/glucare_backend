@@ -10,7 +10,7 @@ const getPrediction = async (req, res) => {
             });
         }
 
-        const apiUrl = process.env.AI_MONITORING_API_URL || "https://itzvynn-glucare-backend.hf.space";
+        const apiUrl = process.env.AI_MONITORING_API_URL || process.env.AI_BASE_URL || "http://localhost:8000";
         
         console.log(`Forwarding prediction request to AI API: ${apiUrl}/assessment/day30`);
         const response = await axios.post(`${apiUrl}/assessment/day30`, {

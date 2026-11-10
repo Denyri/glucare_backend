@@ -75,8 +75,9 @@ const submitKuesioner = async (req, res) => {
 
             try {
                 // 5. Kirim data ke AI
+                const AI_BASE_URL = process.env.AI_BASE_URL || "http://localhost:8000";
                 const aiResponse = await axios.post(
-                    "https://itzvynn-glucare-backend.hf.space/predict/questionnaire",
+                    `${AI_BASE_URL}/predict/questionnaire`,
                     payload,
                     {
                         headers: { "Content-Type": "application/json" },

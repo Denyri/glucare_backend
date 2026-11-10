@@ -3,61 +3,45 @@ const router = express.Router();
 const { predictClinical, predictQuestionnaire, getLatestAnalysisResult, getAnalysisHistory } = require("../controllers/aiController");
 
 // POST /api/ai/predict/clinical — Prediksi mode klinis/lab
-router.post("/predict/clinical", (req, res, next) => {
+router.post("/predict/clinical", (req, res) => {
     /*  #swagger.tags = ['AI Predictions']
-        #swagger.description = 'Endpoint untuk memprediksi tingkat risiko menggunakan mode data klinis (lab).'
+        #swagger.description = 'Skrining risiko prediabetes menggunakan biomarker laboratorium klinis (Random Forest + Standar ADA).'
         #swagger.parameters['body'] = {
             in: 'body',
-            description: 'Data indikator klinis',
-            schema: {
-                user_id: "string_id_123",
-                gula_darah_puasa: 90.5,
-                berat_badan: 70.0,
-                tinggi_badan: 170.0,
-                lingkar_pinggang: 80.0,
-                hdl: 50.0,
-                trigliserida: 150.0,
-                tekanan_sistolik: 120,
-                tekanan_diastolik: 80,
-                riwayat_keluarga: 0,
-                riwayat_diabetes: 0
-            }
-        } 
+            description: 'Data indikator laboratorium klinis pasien',
+            schema: { $ref: '#/definitions/ClinicalPredictionInput' }
+        }
     */
-    next();
-}, predictClinical);
+    predictClinical(req, res);
+});
 
 // POST /api/ai/predict/questionnaire - Prediksi mode kuesioner
-router.post("/predict/questionnaire", (req, res, next) => {
+router.post("/predict/questionnaire", (req, res) => {
     /*  #swagger.tags = ['AI Predictions']
-        #swagger.description = 'Endpoint untuk memprediksi tingkat risiko menggunakan kuesioner umum.'
+        #swagger.description = 'Skrining risiko prediabetes non-invasif berbasis kuesioner gaya hidup (12 faktor risiko NHANES).'
         #swagger.parameters['body'] = {
             in: 'body',
-            description: 'Data jawaban kuesioner',
-            schema: {
-                user_id: "string_id_123",
-                bmi_category: "Normal",
-                waist_category: "Normal",
-                hypertension: 0,
-                overweight_history: 0
-            }
-        } 
+            description: 'Data jawaban kuesioner gaya hidup 12 faktor risiko',
+            schema: { $ref: '#/definitions/QuestionnairePredictionInput' }
+        }
     */
-    next();
-}, predictQuestionnaire);
+    predictQuestionnaire(req, res);
+});
 
 // GET /api/ai/result/:userId - Mengambil hasil analisis terakhir
-router.get("/result/:userId", (req, res, next) => {
+router.get("/result/:userId", (req, res) => {
     /*  #swagger.tags = ['AI Predictions']
-        #swagger.description = 'Mengambil hasil deteksi risiko (health score) terbaru milik user.' */
-    next();
-}, getLatestAnalysisResult);
+        #swagger.description = 'Mengambil hasil deteksi risiko (health score) terbaru milik user.'
+    */
+    getLatestAnalysisResult(req, res);
+});
 
 // GET /api/ai/history/:userId - Mengambil riwayat analisis
-router.get("/history/:userId", (req, res, next) => {
+router.get("/history/:userId", (req, res) => {
     /*  #swagger.tags = ['AI Predictions']
-        #swagger.description = 'Mengambil seluruh riwayat hasil analisis pengguna dari waktu ke waktu.' */
-    next();
-}, getAnalysisHistory);
+        #swagger.description = 'Mengambil seluruh riwayat hasil analisis pengguna dari waktu ke waktu.'
+    */
+    getAnalysisHistory(req, res);
+});
 
 module.exports = router;

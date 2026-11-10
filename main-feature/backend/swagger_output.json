@@ -1,22 +1,60 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "GluCare API",
-    "description": "API Documentation for GluCare Backend",
-    "version": "1.0.0"
+    "title": "GluCare Backend & Clinical AI API",
+    "description": "Dokumentasi Resmi REST API GluCare: Autentikasi, Skrining Klinis AI, Kuesioner, Pelacakan Harian, dan Program 90 Hari.",
+    "version": "2.0.0"
   },
-  "host": "glucare.my.id",
+  "host": "localhost:5001",
   "basePath": "/",
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Manajemen Autentikasi Pengguna & Profil"
+    },
+    {
+      "name": "AI Predictions",
+      "description": "Microservice Analisis & Prediksi Risiko AI GluCare"
+    },
+    {
+      "name": "Lab Assessment",
+      "description": "Penilaian Klinis Laboratorium & Profil Metabolik"
+    },
+    {
+      "name": "Questionnaire Assessment",
+      "description": "Skrining Kuesioner Gaya Hidup Non-Invasif"
+    },
+    {
+      "name": "Program Plan",
+      "description": "Program Intervensi 90 Hari & Evaluasi AI"
+    },
+    {
+      "name": "Daily Logs (Tracking)",
+      "description": "Pencatatan Log & Metrik Harian"
+    },
+    {
+      "name": "AI Monitoring",
+      "description": "Evaluasi Telemetri Pasien Hari ke-30"
+    },
+    {
+      "name": "Dashboard",
+      "description": "Ringkasan Dashboard Pengguna"
+    },
+    {
+      "name": "Streak",
+      "description": "Sistem Gamifikasi, Konsistensi, & Freeze"
+    }
+  ],
   "schemes": [
-    "https",
-    "http"
+    "http",
+    "https"
   ],
   "securityDefinitions": {
     "bearerAuth": {
       "type": "apiKey",
       "in": "header",
       "name": "Authorization",
-      "description": "Enter your bearer token in the format **Bearer &lt;token>**"
+      "description": "Masukkan token JWT Anda dalam format: **Bearer <token>**"
     }
   },
   "paths": {
@@ -36,6 +74,58 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "example": "any"
+                },
+                "title": {
+                  "example": "any"
+                },
+                "body": {
+                  "example": "any"
+                },
+                "icon": {
+                  "example": "any"
+                },
+                "color": {
+                  "example": "any"
+                },
+                "bgColor": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "409": {
+            "description": "Conflict"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -453,28 +543,38 @@
     },
     "/api/kuesioner/submit": {
       "post": {
-        "description": "",
+        "tags": [
+          "Questionnaire Assessment"
+        ],
+        "description": "Submit data kuesioner skrining gaya hidup untuk evaluasi risiko prediabetes non-invasif.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Jawaban kuesioner pengguna",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "user_id": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "usr_12345"
                 },
                 "bmi_category": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 1
                 },
                 "waist_category": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 1
                 },
                 "hypertension": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 0
                 },
                 "overweight_history": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 1
                 }
               }
             }
@@ -498,7 +598,10 @@
     },
     "/api/kuesioner/{user_id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Questionnaire Assessment"
+        ],
+        "description": "Mengambil data riwayat kuesioner pasien berdasarkan User ID.",
         "parameters": [
           {
             "name": "user_id",
@@ -522,54 +625,70 @@
     },
     "/api/lab/submit": {
       "post": {
-        "description": "",
+        "tags": [
+          "Lab Assessment"
+        ],
+        "description": "Submit data hasil pemeriksaan laboratorium klinis pasien untuk analisis risiko prediabetes.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Parameter data klinis dan lab lengkap",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "user_id": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "usr_12345"
                 },
                 "age": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 32
                 },
                 "gender": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 1
                 },
                 "glucose_fasting": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 105
                 },
                 "waist_cm": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 88
                 },
                 "weight": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 74.5
                 },
                 "height": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 170
                 },
                 "hdl": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 48
                 },
                 "triglycerides": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 145
                 },
                 "bp_systolic": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 122
                 },
                 "bp_diastolic": {
-                  "example": "any"
+                  "type": "number",
+                  "example": 78
                 }
               }
             }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
+          "200": {
+            "description": "OK"
           },
           "400": {
             "description": "Bad Request"
@@ -582,7 +701,10 @@
     },
     "/api/lab/{user_id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Lab Assessment"
+        ],
+        "description": "Mengambil data riwayat hasil lab klinis pasien berdasarkan User ID.",
         "parameters": [
           {
             "name": "user_id",
@@ -642,19 +764,54 @@
     },
     "/api/monitoring/predict": {
       "post": {
-        "description": "",
+        "tags": [
+          "AI Monitoring"
+        ],
+        "description": "Memprediksi lintasan metabolisme (trajectory status) pasien pada Hari ke-30 menggunakan telemetri 30 hari.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
+            "description": "Data log 30 hari pasien",
+            "required": true,
             "schema": {
               "type": "object",
               "properties": {
                 "patient_id": {
-                  "example": "any"
+                  "type": "string",
+                  "example": "usr_12345"
                 },
                 "records": {
-                  "example": "any"
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "day_idx": {
+                        "type": "number",
+                        "example": 0
+                      },
+                      "fpg_pred": {
+                        "type": "number",
+                        "example": 105
+                      },
+                      "glucose_mean": {
+                        "type": "number",
+                        "example": 108.5
+                      },
+                      "steps": {
+                        "type": "number",
+                        "example": 6500
+                      },
+                      "sleep_hours": {
+                        "type": "number",
+                        "example": 7.5
+                      },
+                      "carbs_g": {
+                        "type": "number",
+                        "example": 180
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -741,72 +898,20 @@
         "tags": [
           "AI Predictions"
         ],
-        "description": "Endpoint untuk memprediksi tingkat risiko menggunakan mode data klinis (lab).",
+        "description": "Skrining risiko prediabetes menggunakan biomarker laboratorium klinis (Random Forest + Standar ADA).",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "description": "Data indikator klinis",
+            "description": "Data indikator laboratorium klinis pasien",
             "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "type": "string",
-                  "example": "string_id_123"
-                },
-                "gula_darah_puasa": {
-                  "type": "number",
-                  "example": 90.5
-                },
-                "berat_badan": {
-                  "type": "number",
-                  "example": 70
-                },
-                "tinggi_badan": {
-                  "type": "number",
-                  "example": 170
-                },
-                "lingkar_pinggang": {
-                  "type": "number",
-                  "example": 80
-                },
-                "hdl": {
-                  "type": "number",
-                  "example": 50
-                },
-                "trigliserida": {
-                  "type": "number",
-                  "example": 150
-                },
-                "tekanan_sistolik": {
-                  "type": "number",
-                  "example": 120
-                },
-                "tekanan_diastolik": {
-                  "type": "number",
-                  "example": 80
-                },
-                "riwayat_keluarga": {
-                  "type": "number",
-                  "example": 0
-                },
-                "riwayat_diabetes": {
-                  "type": "number",
-                  "example": 0
-                }
-              }
+              "$ref": "#/definitions/ClinicalPredictionInput"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -816,48 +921,20 @@
         "tags": [
           "AI Predictions"
         ],
-        "description": "Endpoint untuk memprediksi tingkat risiko menggunakan kuesioner umum.",
+        "description": "Skrining risiko prediabetes non-invasif berbasis kuesioner gaya hidup (12 faktor risiko NHANES).",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "description": "Data jawaban kuesioner",
+            "description": "Data jawaban kuesioner gaya hidup 12 faktor risiko",
             "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "type": "string",
-                  "example": "string_id_123"
-                },
-                "bmi_category": {
-                  "type": "string",
-                  "example": "Normal"
-                },
-                "waist_category": {
-                  "type": "string",
-                  "example": "Normal"
-                },
-                "hypertension": {
-                  "type": "number",
-                  "example": 0
-                },
-                "overweight_history": {
-                  "type": "number",
-                  "example": 0
-                }
-              }
+              "$ref": "#/definitions/QuestionnairePredictionInput"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -874,20 +951,16 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -904,17 +977,16 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -924,18 +996,18 @@
         "tags": [
           "Program Plan"
         ],
-        "description": "Mendaftarkan pengguna ke program sehat 90 hari.",
+        "description": "Mendaftarkan pengguna ke program sehat 90 hari (Bisa manual atau otomatis preskripsi target dari AI).",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "description": "Target harian pengguna",
+            "description": "Target harian pengguna (opsional, jika kosong akan otomatis diisi rekomendasi AI)",
             "schema": {
               "type": "object",
               "properties": {
                 "user_id": {
-                  "type": "number",
-                  "example": 1
+                  "type": "string",
+                  "example": "usr_12345"
                 },
                 "sleep_target_hours": {
                   "type": "number",
@@ -943,25 +1015,19 @@
                 },
                 "walking_target_minutes": {
                   "type": "number",
-                  "example": 30
+                  "example": 40
                 },
                 "nutrition_goal": {
-                  "type": "number",
-                  "example": 100
+                  "type": "string",
+                  "example": "Defisit Kalori Ringan, Serat >= 30g/hari (Rekomendasi AI)"
                 }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -978,11 +1044,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -999,11 +1062,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1020,11 +1080,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1041,11 +1098,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1062,11 +1116,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1083,14 +1134,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1100,7 +1145,7 @@
         "tags": [
           "Program Plan"
         ],
-        "description": "Menyimpan progres harian pengguna (Tracking Daily).",
+        "description": "Menyimpan progres harian pengguna (Tracking Daily) dan mendapatkan evaluasi AI harian.",
         "parameters": [
           {
             "name": "body",
@@ -1110,8 +1155,8 @@
               "type": "object",
               "properties": {
                 "user_id": {
-                  "type": "number",
-                  "example": 1
+                  "type": "string",
+                  "example": "usr_12345"
                 },
                 "day": {
                   "type": "number",
@@ -1119,7 +1164,7 @@
                 },
                 "sleep_hours": {
                   "type": "number",
-                  "example": 7
+                  "example": 7.5
                 },
                 "walking_minutes": {
                   "type": "number",
@@ -1134,14 +1179,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1151,18 +1190,18 @@
         "tags": [
           "Program Plan"
         ],
-        "description": "Menyimpan nilai gula darah pengguna (Tracking Glucose).",
+        "description": "Menyimpan nilai gula darah pengguna (Tracking Glucose) dan mendapatkan analisis klinis AI ADA.",
         "parameters": [
           {
             "name": "body",
             "in": "body",
-            "description": "Data gula darah",
+            "description": "Data gula darah harian",
             "schema": {
               "type": "object",
               "properties": {
                 "user_id": {
-                  "type": "number",
-                  "example": 1
+                  "type": "string",
+                  "example": "usr_12345"
                 },
                 "day": {
                   "type": "number",
@@ -1170,21 +1209,15 @@
                 },
                 "glucose_value": {
                   "type": "number",
-                  "example": 95
+                  "example": 104
                 }
               }
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1211,11 +1244,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1242,11 +1272,140 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/plan/daily-tracking": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                },
+                "day": {
+                  "example": "any"
+                },
+                "sleep_hours": {
+                  "example": "any"
+                },
+                "walking_minutes": {
+                  "example": "any"
+                },
+                "nutrition_score": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/plan/glucose-tracking": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                },
+                "day": {
+                  "example": "any"
+                },
+                "glucose_value": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/plan/assessment-30": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/plan/assessment-90": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/plan/data/{user_id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1269,14 +1428,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1318,14 +1471,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1351,14 +1498,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1384,14 +1525,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1408,11 +1543,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1436,40 +1568,11 @@
             "name": "month",
             "in": "query",
             "type": "string"
-          },
-          {
-            "name": "view",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "year",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "m",
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "month_num",
-            "in": "query",
-            "type": "string"
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
+          "default": {
+            "description": ""
           }
         }
       }
@@ -1537,6 +1640,1489 @@
           "500": {
             "description": "Internal Server Error"
           }
+        }
+      }
+    },
+    "/predict/clinical": {
+      "post": {
+        "tags": [
+          "AI Predictions"
+        ],
+        "description": "Skrining risiko prediabetes menggunakan biomarker laboratorium klinis (Random Forest + Standar ADA).",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data indikator laboratorium klinis pasien",
+            "schema": {
+              "$ref": "#/definitions/ClinicalPredictionInput"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/predict/questionnaire": {
+      "post": {
+        "tags": [
+          "AI Predictions"
+        ],
+        "description": "Skrining risiko prediabetes non-invasif berbasis kuesioner gaya hidup (12 faktor risiko NHANES).",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data jawaban kuesioner gaya hidup 12 faktor risiko",
+            "schema": {
+              "$ref": "#/definitions/QuestionnairePredictionInput"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/result/{userId}": {
+      "get": {
+        "tags": [
+          "AI Predictions"
+        ],
+        "description": "Mengambil hasil deteksi risiko (health score) terbaru milik user.",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/history/{userId}": {
+      "get": {
+        "tags": [
+          "AI Predictions"
+        ],
+        "description": "Mengambil seluruh riwayat hasil analisis pengguna dari waktu ke waktu.",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "mode",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/submit": {
+      "post": {
+        "tags": [
+          "Questionnaire Assessment"
+        ],
+        "description": "Submit data kuesioner skrining gaya hidup untuk evaluasi risiko prediabetes non-invasif.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Jawaban kuesioner pengguna",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "example": "usr_12345"
+                },
+                "bmi_category": {
+                  "type": "number",
+                  "example": 1
+                },
+                "waist_category": {
+                  "type": "number",
+                  "example": 1
+                },
+                "hypertension": {
+                  "type": "number",
+                  "example": 0
+                },
+                "overweight_history": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/{user_id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/predict": {
+      "post": {
+        "tags": [
+          "AI Monitoring"
+        ],
+        "description": "Memprediksi lintasan metabolisme (trajectory status) pasien pada Hari ke-30 menggunakan telemetri 30 hari.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data log 30 hari pasien",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "properties": {
+                "patient_id": {
+                  "type": "string",
+                  "example": "usr_12345"
+                },
+                "records": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "day_idx": {
+                        "type": "number",
+                        "example": 0
+                      },
+                      "fpg_pred": {
+                        "type": "number",
+                        "example": 105
+                      },
+                      "glucose_mean": {
+                        "type": "number",
+                        "example": 108.5
+                      },
+                      "steps": {
+                        "type": "number",
+                        "example": 6500
+                      },
+                      "sleep_hours": {
+                        "type": "number",
+                        "example": 7.5
+                      },
+                      "carbs_g": {
+                        "type": "number",
+                        "example": 180
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/enroll": {
+      "post": {
+        "tags": [
+          "Program Plan"
+        ],
+        "description": "Mendaftarkan pengguna ke program sehat 90 hari (Bisa manual atau otomatis preskripsi target dari AI).",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Target harian pengguna (opsional, jika kosong akan otomatis diisi rekomendasi AI)",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "example": "usr_12345"
+                },
+                "sleep_target_hours": {
+                  "type": "number",
+                  "example": 8
+                },
+                "walking_target_minutes": {
+                  "type": "number",
+                  "example": 40
+                },
+                "nutrition_goal": {
+                  "type": "string",
+                  "example": "Defisit Kalori Ringan, Serat >= 30g/hari (Rekomendasi AI)"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/tracking/daily/{user_id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/tracking/glucose/{user_id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/daily/{user_id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/glucose/{user_id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/evaluations/{user_id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/daily": {
+      "post": {
+        "tags": [
+          "Program Plan"
+        ],
+        "description": "Menyimpan progres harian pengguna (Tracking Daily) dan mendapatkan evaluasi AI harian.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data harian",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "example": "usr_12345"
+                },
+                "day": {
+                  "type": "number",
+                  "example": 1
+                },
+                "sleep_hours": {
+                  "type": "number",
+                  "example": 7.5
+                },
+                "walking_minutes": {
+                  "type": "number",
+                  "example": 45
+                },
+                "nutrition_score": {
+                  "type": "number",
+                  "example": 85
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/glucose": {
+      "post": {
+        "tags": [
+          "Program Plan"
+        ],
+        "description": "Menyimpan nilai gula darah pengguna (Tracking Glucose) dan mendapatkan analisis klinis AI ADA.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "Data gula darah harian",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "string",
+                  "example": "usr_12345"
+                },
+                "day": {
+                  "type": "number",
+                  "example": 1
+                },
+                "glucose_value": {
+                  "type": "number",
+                  "example": 104
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/assessment30": {
+      "post": {
+        "tags": [
+          "Program Plan"
+        ],
+        "description": "Meminta evaluasi AI untuk pencapaian Hari ke-30.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/assessment90": {
+      "post": {
+        "tags": [
+          "Program Plan"
+        ],
+        "description": "Meminta evaluasi AI final untuk pencapaian Hari ke-90.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "type": "number",
+                  "example": 1
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/daily-tracking": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                },
+                "day": {
+                  "example": "any"
+                },
+                "sleep_hours": {
+                  "example": "any"
+                },
+                "walking_minutes": {
+                  "example": "any"
+                },
+                "nutrition_score": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/glucose-tracking": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                },
+                "day": {
+                  "example": "any"
+                },
+                "glucose_value": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/assessment-30": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/assessment-90": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/data/{user_id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/cancel": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/today": {
+      "get": {
+        "tags": [
+          "Daily Logs (Tracking)"
+        ],
+        "description": "Mengecek apakah user sudah mengisi log harian untuk hari ini.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/register": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fullname": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "gender": {
+                  "example": "any"
+                },
+                "birth_date": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/google": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "token": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/inputData": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "example": "any"
+                },
+                "nama": {
+                  "example": "any"
+                },
+                "jeniskelamin": {
+                  "example": "any"
+                },
+                "tanggallahir": {
+                  "example": "any"
+                },
+                "noTelp": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/profile/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/upload-photo/{id}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/update-profile/{id}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "fullname": {
+                  "example": "any"
+                },
+                "gender": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "phone": {
+                  "example": "any"
+                },
+                "birth_date": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/change-password/{id}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "oldPassword": {
+                  "example": "any"
+                },
+                "newPassword": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/forgot-password": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/verify-otp": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "email": {
+                  "example": "any"
+                },
+                "otp": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/reset-password": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "resetToken": {
+                  "example": "any"
+                },
+                "newPassword": {
+                  "example": "any"
+                },
+                "confirmPassword": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "0": {
+            "description": ""
+          },
+          "1": {
+            "description": ""
+          },
+          "2": {
+            "description": ""
+          },
+          "4": {
+            "description": ""
+          },
+          "5": {
+            "description": ""
+          },
+          "8": {
+            "description": ""
+          },
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/checkin": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                },
+                "timezone": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/freeze/earn": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                },
+                "amount": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/freeze/use": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "user_id": {
+                  "example": "any"
+                },
+                "timezone": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/{userId}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          },
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/{userId}/history": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/send": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "message": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "ClinicalPredictionInput": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "example": "usr_12345"
+        },
+        "glucose_fasting": {
+          "type": "number",
+          "example": 105
+        },
+        "age": {
+          "type": "number",
+          "example": 32
+        },
+        "gender": {
+          "type": "number",
+          "example": 1
+        },
+        "weight": {
+          "type": "number",
+          "example": 74.5
+        },
+        "height": {
+          "type": "number",
+          "example": 170
+        },
+        "bmi": {
+          "type": "number",
+          "example": 25.8
+        },
+        "waist_cm": {
+          "type": "number",
+          "example": 88
+        },
+        "bp_systolic": {
+          "type": "number",
+          "example": 122
+        },
+        "bp_diastolic": {
+          "type": "number",
+          "example": 78
+        },
+        "hdl": {
+          "type": "number",
+          "example": 48
+        },
+        "triglycerides": {
+          "type": "number",
+          "example": 145
+        },
+        "riwayat_keluarga": {
+          "type": "number",
+          "example": 1
+        },
+        "riwayat_diabetes": {
+          "type": "number",
+          "example": 0
+        }
+      }
+    },
+    "QuestionnairePredictionInput": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "example": "usr_test_001"
+        },
+        "age_band": {
+          "type": "number",
+          "example": 1
+        },
+        "gender": {
+          "type": "number",
+          "example": 2
+        },
+        "bmi_category": {
+          "type": "number",
+          "example": 1
+        },
+        "waist_category": {
+          "type": "number",
+          "example": 1
+        },
+        "hypertension": {
+          "type": "number",
+          "example": 0
+        },
+        "diabetes_history": {
+          "type": "number",
+          "example": 0
+        },
+        "prediabetes_told": {
+          "type": "number",
+          "example": 0
+        },
+        "prediabetes_history": {
+          "type": "number",
+          "example": 0
+        },
+        "physically_active": {
+          "type": "number",
+          "example": 0
+        },
+        "sedentary_hours": {
+          "type": "number",
+          "example": 6
+        },
+        "current_smoker": {
+          "type": "number",
+          "example": 0
+        },
+        "poor_diet": {
+          "type": "number",
+          "example": 1
+        }
+      }
+    },
+    "LabSubmitInput": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "example": "usr_12345"
+        },
+        "age": {
+          "type": "number",
+          "example": 32
+        },
+        "gender": {
+          "type": "number",
+          "example": 1
+        },
+        "glucose_fasting": {
+          "type": "number",
+          "example": 105
+        },
+        "waist_cm": {
+          "type": "number",
+          "example": 88
+        },
+        "weight": {
+          "type": "number",
+          "example": 74.5
+        },
+        "height": {
+          "type": "number",
+          "example": 170
+        },
+        "hdl": {
+          "type": "number",
+          "example": 48
+        },
+        "triglycerides": {
+          "type": "number",
+          "example": 145
+        },
+        "bp_systolic": {
+          "type": "number",
+          "example": 122
+        },
+        "bp_diastolic": {
+          "type": "number",
+          "example": 78
+        }
+      }
+    },
+    "DailyTrackingInput": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "number",
+          "example": 1
+        },
+        "day": {
+          "type": "number",
+          "example": 1
+        },
+        "sleep_hours": {
+          "type": "number",
+          "example": 7.5
+        },
+        "walking_minutes": {
+          "type": "number",
+          "example": 45
+        },
+        "nutrition_score": {
+          "type": "number",
+          "example": 85
+        }
+      }
+    },
+    "GlucoseTrackingInput": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "number",
+          "example": 1
+        },
+        "day": {
+          "type": "number",
+          "example": 1
+        },
+        "glucose_value": {
+          "type": "number",
+          "example": 98.5
         }
       }
     }
