@@ -1,6 +1,6 @@
 /**
  * Glucare AI Service
- * Menghubungkan ke AI Backend di: https://itzvynn-glucare-backend.hf.space
+ * Menghubungkan ke GluCare AI Local Microservice di: http://localhost:8000
  *
  * Semua endpoint yang tersedia:
  *
@@ -55,21 +55,14 @@
  */
 
 import axios from "axios";
+import api from "./api";
 
-const AI_BASE_URL = "https://itzvynn-glucare-backend.hf.space";
-const BACKEND_URL = import.meta.env.VITE_API_URL;
+const AI_BASE_URL = import.meta.env.VITE_AI_URL || "http://localhost:8000";
 
 export const aiClient = axios.create({
     baseURL: AI_BASE_URL,
     headers: { "Content-Type": "application/json" },
-    timeout: 30000, // 30 detik (HF Space bisa cold-start ~15 detik)
-});
-
-// Client untuk backend lokal (proxy AI)
-const backendClient = axios.create({
-    baseURL: BACKEND_URL,
-    headers: { "Content-Type": "application/json" },
-    timeout: 60000, // 60 detik (backend -> HF bisa lebih lama)
+    timeout: 10000,
 });
 
 // ── GET / — Health check API ───────────────────────────────────
@@ -80,42 +73,43 @@ export async function checkAPIHealth() {
 
 // ── POST /api/ai/predict/clinical — Prediksi klinis via backend ─
 export async function predictClinical(params) {
-    const response = await backendClient.post("/api/ai/predict/clinical", params);
-    return response.data; // { mode, aiResult, clinicalParams, timestamp }
+    const response = await api.post("/api/ai/predict/clinical", params);
+    return response.data; // { mode: 'clinical', aiResult, ui_data, clinicalParams, timestamp }
 }
 
-// ── POST /api/kuesioner/submit — Prediksi kuesioner via backend
+// ── POST /api/ai/predict/questionnaire — Prediksi kuesioner via backend
 export async function predictQuestionnaire(params) {
-    const response = await backendClient.post("/api/kuesioner/submit", params);
-    return response.data; // { mode, risk_level, cta, assessment_id }
+    const response = await api.post("/api/ai/predict/questionnaire", params);
+    return response.data; // { mode: 'questionnaire', aiResult, ui_data, answers, timestamp }
 }
 
 // ── POST /api/plan/enroll — Daftar program 90 hari ─────────────
 export async function enrollProgram(params) {
-    const response = await backendClient.post("/api/plan/enroll", params);
+    const response = await api.post("/api/plan/enroll", params);
     return response.data;
 }
 
 // ── POST /api/plan/daily — Tracking harian ────────────────────
 export async function submitDailyTracking(params) {
-    const response = await backendClient.post("/api/plan/daily", params);
+    const response = await api.post("/api/plan/daily", params);
     return response.data;
 }
 
 // ── POST /api/plan/glucose — Tracking gula darah ──────────────
 export async function submitGlucoseTracking(params) {
-    const response = await backendClient.post("/api/plan/glucose", params);
+    const response = await api.post("/api/plan/glucose", params);
     return response.data;
 }
 
 // ── POST /api/plan/assessment30 — Evaluasi 30 hari ─────────────────
 export async function assessmentDay30(params) {
-    const response = await backendClient.post("/api/plan/assessment30", params);
+    const response = await api.post("/api/plan/assessment30", params);
     return response.data;
 }
 
 // ── POST /api/plan/assessment90 — Evaluasi akhir 90 hari ───────────
 export async function assessmentDay90(params) {
-    const response = await backendClient.post("/api/plan/assessment90", params);
+    const response = await api.post("/api/plan/assessment90", params);
     return response.data;
 }
+
