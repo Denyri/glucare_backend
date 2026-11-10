@@ -8,8 +8,20 @@ export default {
   theme: {
     extend: {
       "colors": {
+          "primary": "#0062E3",
+          "primary-dark": "#0B192C",
+          "primary-hover": "#004EC4",
+          "primary-light": "#EFF6FF",
+          "clinical-blue": "#0057C8",
+          "cyan-accent": "#00D2D3",
+          "health-green": "#10B981",
+          "health-green-light": "#ECFDF5",
+          "health-amber": "#F59E0B",
+          "health-amber-light": "#FFFBEB",
+          "health-rose": "#EF4444",
+          "health-rose-light": "#FEF2F2",
+          "slate-bg": "#F8FAFC",
           "surface-tint": "#005ac4",
-          "primary": "#0057bf",
           "background": "#f8f9ff",
           "inverse-primary": "#aec6ff",
           "surface-container-low": "#eff4ff",
@@ -56,10 +68,20 @@ export default {
           "surface-container": "#e5eeff",
           "on-surface-variant": "#424754"
       },
+      "boxShadow": {
+          "soft": "0 2px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02)",
+          "card": "0 10px 30px -5px rgba(11, 25, 44, 0.06), 0 4px 10px -2px rgba(11, 25, 44, 0.03)",
+          "card-hover": "0 20px 40px -10px rgba(0, 98, 227, 0.14), 0 8px 16px -4px rgba(0, 98, 227, 0.06)",
+          "glow-blue": "0 0 30px rgba(0, 98, 227, 0.22)",
+          "glow-cyan": "0 0 30px rgba(0, 210, 211, 0.28)",
+          "glass": "0 8px 32px 0 rgba(11, 25, 44, 0.08)",
+      },
       "borderRadius": {
           "DEFAULT": "0.25rem",
           "lg": "0.5rem",
           "xl": "0.75rem",
+          "2xl": "1rem",
+          "3xl": "1.5rem",
           "full": "9999px"
       },
       "spacing": {
@@ -74,15 +96,23 @@ export default {
           "gutter": "24px"
       },
       "fontFamily": {
-          "sans" : ['Poppins', 'sans-serif'],
-          "body-md": ["Inter", "sans-serif"],
-          "label-sm": ["Inter", "sans-serif"],
-          "headline-md": ["Plus Jakarta Sans", "sans-serif"],
-          "body-lg": ["Inter", "sans-serif"],
-          "headline-lg": ["Plus Jakarta Sans", "sans-serif"],
-          "headline-lg-mobile": ["Plus Jakarta Sans", "sans-serif"],
-          "display-lg": ["Plus Jakarta Sans", "sans-serif"],
-          "label-md": ["Inter", "sans-serif"]
+          "sans" : ['Plus Jakarta Sans', 'Inter', 'system-ui', 'sans-serif'],
+          "heading": ["'Baloo 2'", 'cursive', 'sans-serif'],
+          "baloo": ["'Baloo 2'", 'cursive', 'sans-serif'],
+          "subheading": ["'Plus Jakarta Sans'", 'sans-serif'],
+          "body": ["'Plus Jakarta Sans'", 'sans-serif'],
+          "button": ["'Plus Jakarta Sans'", 'sans-serif'],
+          "jakarta": ["'Plus Jakarta Sans'", 'sans-serif'],
+          "display": ["'Baloo 2'", 'cursive', 'sans-serif'],
+          "mono": ['JetBrains Mono', 'Fira Code', 'monospace'],
+          "body-md": ["'Plus Jakarta Sans'", "sans-serif"],
+          "label-sm": ["'Plus Jakarta Sans'", "sans-serif"],
+          "headline-md": ["'Baloo 2'", "cursive", "sans-serif"],
+          "body-lg": ["'Plus Jakarta Sans'", "sans-serif"],
+          "headline-lg": ["'Baloo 2'", "cursive", "sans-serif"],
+          "headline-lg-mobile": ["'Baloo 2'", "cursive", "sans-serif"],
+          "display-lg": ["'Baloo 2'", "cursive", "sans-serif"],
+          "label-md": ["'Plus Jakarta Sans'", "sans-serif"]
       },
       "fontSize": {
           "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],

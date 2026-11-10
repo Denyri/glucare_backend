@@ -3,12 +3,15 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 import { SidebarProvider } from "./context/SidebarContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <SidebarProvider>
-      <App />
-    </SidebarProvider>
+    <AuthProvider>
+      <SidebarProvider>
+        <App />
+      </SidebarProvider>
+    </AuthProvider>
   </BrowserRouter>
 );
