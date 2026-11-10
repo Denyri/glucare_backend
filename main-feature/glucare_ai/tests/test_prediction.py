@@ -19,15 +19,30 @@ if hasattr(sys.stdout, "reconfigure"):
         pass
 
 # Setup paths
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent if Path(__file__).resolve().parent.name == "tests" else Path(__file__).resolve().parent
 MODELS_DIR = BASE_DIR / "models"
+NEW_PIPELINE_PATH = MODELS_DIR / "glucare_prediabetes_model.joblib"
 MODEL_PATH = MODELS_DIR / "clinical_model.pkl"
 SCALER_PATH = MODELS_DIR / "clinical_scaler.pkl"
 INFO_PATH = MODELS_DIR / "clinical_model_info.json"
 
 
 def load_model_assets():
-    """Load model, scaler, and metadata info."""
+    """Load model pipeline or legacy assets."""
+    if NEW_PIPELINE_PATH.exists():
+        artifact = joblib.load(NEW_PIPELINE_PATH)
+        pipeline = artifact["pipeline"]
+        features = artifact["features"]
+        info = {
+            "model_name": artifact.get("model_name", "Random Forest Pipeline"),
+            "features": features,
+            "n_features": len(features),
+            "classes": {"0": "Normal", "1": "Pre-diabetes"},
+            "threshold": 0.5,
+            "metrics": artifact.get("test_metrics", {})
+        }
+        return pipeline, None, info
+
     if not MODEL_PATH.exists() or not SCALER_PATH.exists():
         raise FileNotFoundError(f"Model assets not found in {MODELS_DIR}")
 
@@ -56,13 +71,17 @@ def predict_patient(patient_data: dict, model, scaler, info) -> dict:
 
     # Order features according to model specification
     features = info["features"]
-    feature_values = [data[f] for f in features]
+    feature_values = [data.get(f, 0.0) for f in features]
     X_df = pd.DataFrame([feature_values], columns=features)
 
-    # Scale and predict
-    X_scaled = scaler.transform(X_df)
-    pred = int(model.predict(X_scaled)[0])
-    probs = model.predict_proba(X_scaled)[0]
+    # Scale and predict (using Pipeline if scaler is None, else legacy scaler)
+    if scaler is None:
+        pred = int(model.predict(X_df)[0])
+        probs = model.predict_proba(X_df)[0]
+    else:
+        X_scaled = scaler.transform(X_df)
+        pred = int(model.predict(X_scaled)[0])
+        probs = model.predict_proba(X_scaled)[0]
 
     prob_normal = float(probs[0])
     prob_prediabetes = float(probs[1])

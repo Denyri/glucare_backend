@@ -7,8 +7,8 @@ import sys
 import json
 from pathlib import Path
 
-# Add src to sys.path
-BASE_DIR = Path(__file__).resolve().parent
+# Add root to sys.path
+BASE_DIR = Path(__file__).resolve().parent.parent if Path(__file__).resolve().parent.name == "tests" else Path(__file__).resolve().parent
 if str(BASE_DIR) not in sys.path:
     sys.path.append(str(BASE_DIR))
 

@@ -1,7 +1,7 @@
 """
 Machine Learning Modeling Pipeline for GluCare Prediabetes Detection (Steps 9-13)
 Dataset: nhanes_glucare_target_20_40.csv (653 samples, Age 20-40)
-Models: Logistic Regression, Random Forest, Gradient Boosting
+Models: Logistic Regression, Random Forest, Gradient Boosting, XGBoost, LightGBM
 Includes Stratified Split, 5-Fold CV, Metric Evaluation, and Model Export.
 """
 
@@ -16,6 +16,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
 from sklearn.metrics import (
     classification_report,
     confusion_matrix,
@@ -72,6 +74,29 @@ def evaluate_models(X_train, y_train, cv_folds=5):
             ("scaler", StandardScaler()),
             ("clf", GradientBoostingClassifier(n_estimators=100, learning_rate=0.08, max_depth=3, random_state=42)),
         ]),
+        "XGBoost": Pipeline([
+            ("scaler", StandardScaler()),
+            ("clf", XGBClassifier(
+                n_estimators=100,
+                learning_rate=0.08,
+                max_depth=4,
+                scale_pos_weight=1,
+                random_state=42,
+                eval_metric="logloss",
+                verbosity=0,
+            )),
+        ]),
+        "LightGBM": Pipeline([
+            ("scaler", StandardScaler()),
+            ("clf", LGBMClassifier(
+                n_estimators=100,
+                learning_rate=0.08,
+                max_depth=4,
+                class_weight="balanced",
+                random_state=42,
+                verbose=-1,
+            )),
+        ]),
     }
 
     scoring = {
@@ -106,21 +131,28 @@ def evaluate_models(X_train, y_train, cv_folds=5):
     return candidate_models, results
 
 
-def train_and_test_best_model(candidate_models, X_train, y_train, X_test, y_test, feature_cols, models_dir: Path):
+def train_and_test_best_model(candidate_models, cv_results, X_train, y_train, X_test, y_test, feature_cols, models_dir: Path):
     """
-    Train final models on entire training set, evaluate on held-out test set (Step 11),
-    extract feature importances (Step 12), and export best pipeline (Step 13).
+    Select best model by mean CV ROC-AUC on the training set, train final models on
+    entire training set, evaluate on held-out test set (Step 11), extract feature
+    importances (Step 12), and export best pipeline (Step 13).
+    The test set is only used for reporting, never for model selection.
     """
     models_dir.mkdir(parents=True, exist_ok=True)
+
+    # Model selection uses training-set cross-validation only
+    best_name = max(cv_results, key=lambda name: cv_results[name]["mean_roc_auc"])
+    best_cv_auc = cv_results[best_name]["mean_roc_auc"]
+
+    print("\n" + "=" * 70)
+    print(f"SELECTED BEST MODEL (CV ROC-AUC): {best_name} (CV ROC-AUC = {best_cv_auc:.4f})")
+    print("=" * 70)
 
     print("\n" + "=" * 70)
     print("STEP 11: HELD-OUT TEST SET EVALUATION (20% SAMPLES)")
     print("=" * 70)
 
     test_eval = {}
-    best_f1 = -1.0
-    best_name = None
-    best_pipeline = None
 
     for name, pipe in candidate_models.items():
         pipe.fit(X_train, y_train)
@@ -147,13 +179,9 @@ def train_and_test_best_model(candidate_models, X_train, y_train, X_test, y_test
         print("Confusion Matrix:")
         print(confusion_matrix(y_test, preds))
 
-        if f1 > best_f1:
-            best_f1 = f1
-            best_name = name
-            best_pipeline = pipe
-
+    best_pipeline = candidate_models[best_name]
     print("\n" + "=" * 70)
-    print(f"SELECTED BEST MODEL: {best_name} (F1 = {best_f1:.4f})")
+    print(f"FINAL TEST PERFORMANCE: {best_name} (F1 = {test_eval[best_name]['f1']:.4f} | ROC-AUC = {test_eval[best_name]['roc_auc']:.4f})")
     print("=" * 70)
 
     # Step 12: Feature Importance Analysis
@@ -220,7 +248,7 @@ def run_modeling_pipeline():
 
     # 4. Step 11, 12, 13: Test Evaluation, Explainability & Export
     best_name, test_eval = train_and_test_best_model(
-        candidate_models, X_train, y_train, X_test, y_test, feature_cols, models_dir
+        candidate_models, cv_results, X_train, y_train, X_test, y_test, feature_cols, models_dir
     )
 
     print("\n" + "=" * 70)

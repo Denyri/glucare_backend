@@ -1,0 +1,1714 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "GluCare AI Engine & Clinical Microservice API",
+    "description": "\n## 🩺 GluCare AI Engine & Clinical Microservice API (OpenAPI / Swagger 3.0)\n\nSelamat datang di dokumentasi resmi **GluCare AI Engine**. Layanan microservice ini menyediakan model Machine Learning prediktif dan inferensi klinis berbasis bukti (*evidence-based*) yang dirancang khusus untuk deteksi dini, pemantauan, dan pemulihan prediabetes pada populasi usia produktif (20–40 tahun).\n\n---\n\n### 🧠 Arsitektur Model Machine Learning\n1. **Clinical Screening Model (Random Forest & ADA Triage)**:\n   - Terlatih pada dataset CDC NHANES 2021–2023 dengan 12 fitur klinis: GDP, profil lipid (HDL, Trigliserida, Rasio TG/HDL), antropometri (BMI, Lingkar Pinggang), dan tekanan darah.\n   - Metrik Uji Independen: Akurasi **94.66%**, ROC-AUC **0.9634**, Spesifisitas **98.78%**.\n2. **Questionnaire Lifestyle Model (Logistic Regression ML & Heuristic Fallback)**:\n   - Skrining non-invasif berbasis 12 parameter gaya hidup, antropometri Asia, dan riwayat medis keluarga tanpa memerlukan jarum/sampel darah.\n   - Metrik Uji: ROC-AUC **0.866**, Precision **80.0%**.\n3. **90-Day Trajectory Monitoring Model (XGBoost Classifier)**:\n   - Evaluasi milestone pada Hari ke-30 untuk memproyeksikan lintasan metabolisme pasien di Hari ke-90 (*Membaik* vs *Memburuk / Stagnan*).\n4. **Daily Metabolic Impact Engine & ADA Glucose Triage**:\n   - Menghitung skor dampak metabolik harian dari 3 pilar (Tidur, Jalan Kaki, Nutrisi) dan melakukan triase mandiri kadar gula darah sesuai standar American Diabetes Association.\n\n---\n\n### 📌 Navigasi Cepat\n- **Swagger UI Interaktif**: [`/docs`](/docs)\n- **ReDoc Interactive Reader**: [`/redoc`](/redoc)\n- **Skema OpenAPI JSON**: [`/openapi.json`](/openapi.json)\n- **Unduh Skema Mandiri**: [`/docs/export-spec`](/docs/export-spec)\n",
+    "contact": {
+      "name": "Tim AI & Medis GluCare",
+      "url": "https://glucare.health/",
+      "email": "ai-dev@glucare.health"
+    },
+    "license": {
+      "name": "Proprietary - GluCare Health"
+    },
+    "version": "2.1.0"
+  },
+  "paths": {
+    "/ping": {
+      "get": {
+        "tags": [
+          "5. Diagnostic & System Health"
+        ],
+        "summary": "Ping Health Check Endpoint",
+        "description": "Endpoint ringan untuk health probe gateway dan monitoring uptime.",
+        "operationId": "health_check_ping_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthCheckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "5. Diagnostic & System Health"
+        ],
+        "summary": "Cek Status Layanan & Kesiapan Model AI",
+        "description": "Mengembalikan status operasional microservice dan ketersediaan masing-masing model Machine Learning dalam memori.",
+        "operationId": "health_check__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthCheckResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/docs/export-spec": {
+      "get": {
+        "tags": [
+          "5. Diagnostic & System Health"
+        ],
+        "summary": "Unduh / Lihat Spesifikasi OpenAPI JSON Lengkap",
+        "description": "Mengembalikan seluruh kamus skema OpenAPI 3.0 / Swagger untuk diimpor ke Postman, Insomnia, atau SwaggerHub.",
+        "operationId": "export_openapi_specification_docs_export_spec_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict/clinical": {
+      "post": {
+        "tags": [
+          "1. Skrining Risiko (Clinical & Questionnaire)"
+        ],
+        "summary": "Skrining Risiko Prediabetes via Data Klinis / Lab",
+        "description": "Memprediksi tingkat risiko prediabetes berdasarkan parameter biomarker laboratorium (GDP, Lipid, Tekanan Darah, Antropometri) menggunakan model Random Forest terkalibrasi.",
+        "operationId": "predict_clinical_predict_clinical_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClinicalPredictionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Hasil skrining risiko klinis berhasil diproses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClinicalPredictionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parameter data klinis tidak valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Model klinis belum dimuat",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict/questionnaire": {
+      "post": {
+        "tags": [
+          "1. Skrining Risiko (Clinical & Questionnaire)"
+        ],
+        "summary": "Skrining Risiko Prediabetes via Kuesioner Gaya Hidup Non-Invasif",
+        "description": "Memprediksi risiko prediabetes tanpa sampel darah berbasis 12 faktor risiko gaya hidup, antropometri Asia, dan riwayat kesehatan (dilatih pada survei CDC NHANES 2021-2023).",
+        "operationId": "predict_questionnaire_predict_questionnaire_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionnairePredictionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Hasil skrining kuesioner gaya hidup berhasil diproses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionnairePredictionResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Parameter kuesioner tidak lengkap",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Kegagalan internal proses inferensi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict/day30": {
+      "post": {
+        "tags": [
+          "2. Monitoring Intervensi 90 Hari (Milestone)"
+        ],
+        "summary": "Evaluasi Trajektori Metabolisme Hari ke-30",
+        "description": "Mengevaluasi tren glukosa, kepatuhan aktivitas, dan langkah harian selama 30 hari pertama untuk memprediksi arah perbaikan metabolisme di Hari ke-90 menggunakan model XGBoost.",
+        "operationId": "predict_day30_predict_day30_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Day30PredictionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Evaluasi trajektori hari ke-30 berhasil dihitung",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Day30PredictionResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Kegagalan evaluasi model monitoring",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict/day90": {
+      "post": {
+        "tags": [
+          "2. Monitoring Intervensi 90 Hari (Milestone)"
+        ],
+        "summary": "Evaluasi Hasil Akhir Program Intervensi Hari ke-90",
+        "description": "Membandingkan profil glukosa bulan ke-1 terhadap bulan ke-3 untuk mengevaluasi keberhasilan intervensi dan memberikan panduan gaya hidup mandiri jangka panjang.",
+        "operationId": "predict_day90_predict_day90_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Day90PredictionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Evaluasi akhir milestone 90 hari berhasil diselesaikan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Day90PredictionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict/daily": {
+      "post": {
+        "tags": [
+          "3. Telemetri Harian & Glukosa (Daily Tracking)"
+        ],
+        "summary": "Evaluasi AI Harian 3 Pilar (Tidur, Aktivitas, Nutrisi)",
+        "description": "Menghitung skor dampak metabolik harian dan memberikan feedback fisiologis cerdas serta rekomendasi fokus untuk esok hari.",
+        "operationId": "predict_daily_predict_daily_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DailyPredictionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Log harian tersimpan dan evaluasi AI berhasil dikalkulasi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DailyPredictionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict/glucose": {
+      "post": {
+        "tags": [
+          "3. Telemetri Harian & Glukosa (Daily Tracking)"
+        ],
+        "summary": "Triase Klinis Glukosa Darah Harian Standar ADA",
+        "description": "Mengklasifikasikan kadar gula darah puasa mandiri ke dalam zona Normal, Prediabetes Alert, atau High Risk sesuai kriteria American Diabetes Association.",
+        "operationId": "predict_glucose_predict_glucose_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GlucosePredictionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Pengukuran gula darah terklasifikasi menurut standar ADA",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GlucosePredictionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/program/enroll": {
+      "post": {
+        "tags": [
+          "4. Preskripsi Program Intervensi (Enrollment)"
+        ],
+        "summary": "Preskripsi AI Target Personal Program 90 Hari",
+        "description": "Menghasilkan preskripsi target tidur, target jalan kaki, dan fokus nutrisi yang dipersonalisasi berdasarkan tingkat risiko klinis pengguna.",
+        "operationId": "predict_enroll_program_enroll_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrollPredictionInput"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Preskripsi target program 90 hari berhasil diformulasikan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollPredictionResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ClinicalPredictionInput": {
+        "properties": {
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id",
+            "description": "ID Pengguna / Pasien (opsional)",
+            "default": "usr_test_001"
+          },
+          "glucose_fasting": {
+            "type": "number",
+            "title": "Glucose Fasting",
+            "description": "Glukosa Darah Puasa / GDP dalam mg/dL (Ambang Normal ADA: <100, Prediabetes: 100-125, Diabetes: >=126)",
+            "default": 105.0
+          },
+          "age": {
+            "type": "integer",
+            "title": "Age",
+            "description": "Usia pasien (dewasa muda 20-40 tahun)",
+            "default": 32
+          },
+          "gender": {
+            "type": "integer",
+            "title": "Gender",
+            "description": "Jenis Kelamin (1: Laki-laki, 2: Perempuan)",
+            "default": 1
+          },
+          "weight": {
+            "type": "number",
+            "title": "Weight",
+            "description": "Berat Badan (kg)",
+            "default": 74.5
+          },
+          "height": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Height",
+            "description": "Tinggi Badan (cm)",
+            "default": 170.0
+          },
+          "bmi": {
+            "type": "number",
+            "title": "Bmi",
+            "description": "Indeks Massa Tubuh / BMI (kg/m2, Standar Asia Overweight >=23, Obesitas >=27.5)",
+            "default": 25.8
+          },
+          "waist_cm": {
+            "type": "number",
+            "title": "Waist Cm",
+            "description": "Lingkar Pinggang dalam cm (Ambang berisiko: Pria >90 cm, Wanita >80 cm)",
+            "default": 88.0
+          },
+          "bp_systolic": {
+            "type": "number",
+            "title": "Bp Systolic",
+            "description": "Tekanan Darah Sistolik (mmHg)",
+            "default": 122.0
+          },
+          "bp_diastolic": {
+            "type": "number",
+            "title": "Bp Diastolic",
+            "description": "Tekanan Darah Diastolik (mmHg)",
+            "default": 78.0
+          },
+          "hdl": {
+            "type": "number",
+            "title": "Hdl",
+            "description": "Kolesterol HDL (mg/dL, protektif: >50)",
+            "default": 48.0
+          },
+          "triglycerides": {
+            "type": "number",
+            "title": "Triglycerides",
+            "description": "Kadar Trigliserida (mg/dL, optimal: <150)",
+            "default": 145.0
+          },
+          "map_pressure": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Map Pressure",
+            "description": "Mean Arterial Pressure (opsional, auto-hitung jika kosong)"
+          },
+          "tg_hdl_ratio": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tg Hdl Ratio",
+            "description": "Rasio Trigliserida / HDL (opsional, penanda resistensi insulin)"
+          },
+          "riwayat_keluarga": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Riwayat Keluarga",
+            "description": "Riwayat diabetes di keluarga (0: Tidak, 1: Ya)",
+            "default": 0
+          },
+          "riwayat_diabetes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Riwayat Diabetes",
+            "description": "Riwayat diabetes pasien sebelumnya (0: Tidak, 1: Ya)",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "ClinicalPredictionInput",
+        "example": {
+          "age": 32,
+          "bmi": 25.8,
+          "bp_diastolic": 78.0,
+          "bp_systolic": 122.0,
+          "gender": 1,
+          "glucose_fasting": 105.0,
+          "hdl": 48.0,
+          "height": 170.0,
+          "riwayat_diabetes": 0,
+          "riwayat_keluarga": 0,
+          "triglycerides": 145.0,
+          "user_id": "usr_test_001",
+          "waist_cm": 88.0,
+          "weight": 74.5
+        }
+      },
+      "ClinicalPredictionResponse": {
+        "properties": {
+          "prediction": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Prediction",
+            "description": "Prediksi kelas biner (0: Normal, 1: Prediabetes)"
+          },
+          "predict_proba": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "title": "Predict Proba",
+            "description": "Array probabilitas [P(Normal), P(Prediabetes), P(Diabetes)]"
+          },
+          "risk_level": {
+            "type": "string",
+            "title": "Risk Level",
+            "description": "Tingkat klasifikasi risiko: 'Normal', 'Prediabetes', atau 'Diabetes'"
+          },
+          "score": {
+            "type": "integer",
+            "title": "Score",
+            "description": "Skor risiko prediabetes dalam persen (0-100%)"
+          },
+          "probability_prediabetes": {
+            "type": "number",
+            "title": "Probability Prediabetes",
+            "description": "Probabilitas terkalibrasi prediabetes (0.0000 - 1.0000)"
+          },
+          "probability_normal": {
+            "type": "number",
+            "title": "Probability Normal",
+            "description": "Probabilitas kondisi sehat / normal (0.0000 - 1.0000)"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary",
+            "description": "Ringkasan penjelasan diagnosis klinis AI"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prediction",
+          "predict_proba",
+          "risk_level",
+          "score",
+          "probability_prediabetes",
+          "probability_normal",
+          "summary"
+        ],
+        "title": "ClinicalPredictionResponse",
+        "example": {
+          "predict_proba": [
+            [
+              0.15,
+              0.85,
+              0.0
+            ]
+          ],
+          "prediction": [
+            1
+          ],
+          "probability_normal": 0.15,
+          "probability_prediabetes": 0.85,
+          "risk_level": "Prediabetes",
+          "score": 85,
+          "summary": "Hasil analisis klinis mengindikasikan tingkat risiko: Prediabetes (Skor: 85%)"
+        }
+      },
+      "DailyPredictionInput": {
+        "properties": {
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id",
+            "description": "ID Pengguna",
+            "default": "usr_test_001"
+          },
+          "day": {
+            "type": "integer",
+            "title": "Day",
+            "description": "Hari ke- dalam program (1 sampai 90)",
+            "default": 1
+          },
+          "sleep_hours": {
+            "type": "number",
+            "title": "Sleep Hours",
+            "description": "Jumlah jam tidur malam ini (jam)",
+            "default": 7.5
+          },
+          "walking_minutes": {
+            "type": "number",
+            "title": "Walking Minutes",
+            "description": "Durasi jalan kaki hari ini (menit)",
+            "default": 45.0
+          },
+          "nutrition_score": {
+            "type": "number",
+            "title": "Nutrition Score",
+            "description": "Skor kepatuhan nutrisi harian (0-100)",
+            "default": 85.0
+          },
+          "glucose_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Glucose Value",
+            "description": "Kadar gula darah harian jika ada (mg/dL)",
+            "default": 98.0
+          },
+          "sleep_target_hours": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sleep Target Hours",
+            "description": "Target jam tidur pengguna",
+            "default": 7.5
+          },
+          "walking_target_minutes": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Walking Target Minutes",
+            "description": "Target menit jalan kaki pengguna",
+            "default": 30
+          }
+        },
+        "type": "object",
+        "title": "DailyPredictionInput",
+        "example": {
+          "day": 1,
+          "glucose_value": 98.0,
+          "nutrition_score": 85.0,
+          "sleep_hours": 7.5,
+          "sleep_target_hours": 7.5,
+          "user_id": "usr_test_001",
+          "walking_minutes": 45.0,
+          "walking_target_minutes": 30
+        }
+      },
+      "DailyPredictionResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Status penyimpanan data ('saved')"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id",
+            "description": "ID Pengguna"
+          },
+          "day": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Day",
+            "description": "Hari ke- dalam program"
+          },
+          "goal_achieved": {
+            "type": "boolean",
+            "title": "Goal Achieved",
+            "description": "Indikator apakah ketiga pilar berhasil tercapai"
+          },
+          "sleep_met": {
+            "type": "boolean",
+            "title": "Sleep Met",
+            "description": "Status pemenuhan target tidur"
+          },
+          "walking_met": {
+            "type": "boolean",
+            "title": "Walking Met",
+            "description": "Status pemenuhan target jalan kaki"
+          },
+          "nutrition_met": {
+            "type": "boolean",
+            "title": "Nutrition Met",
+            "description": "Status pemenuhan target nutrisi"
+          },
+          "metabolic_impact_score": {
+            "type": "number",
+            "title": "Metabolic Impact Score",
+            "description": "Skor dampak metabolik harian terbobot (0.0 - 100.0)"
+          },
+          "ai_feedback": {
+            "type": "string",
+            "title": "Ai Feedback",
+            "description": "Feedback fisiologis berbasis sains dari AI"
+          },
+          "tomorrow_tip": {
+            "type": "string",
+            "title": "Tomorrow Tip",
+            "description": "Tindakan prioritas esok hari"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "goal_achieved",
+          "sleep_met",
+          "walking_met",
+          "nutrition_met",
+          "metabolic_impact_score",
+          "ai_feedback",
+          "tomorrow_tip"
+        ],
+        "title": "DailyPredictionResponse",
+        "example": {
+          "ai_feedback": "Luar biasa! Seluruh target 3 pilar hari ini tercapai (Skor Metabolik: 95.5%). Kombinasi jalan kaki 45 menit dan tidur 7.5 jam ini secara langsung mengaktifkan translokasi GLUT4 di otot, membantu menstabilkan glukosa puasa esok pagi.",
+          "day": 1,
+          "goal_achieved": true,
+          "metabolic_impact_score": 95.5,
+          "nutrition_met": true,
+          "sleep_met": true,
+          "status": "saved",
+          "tomorrow_tip": "Pertahankan ritme ini. Lakukan peregangan ringan 5 menit sebelum tidur untuk mengoptimalkan deep sleep.",
+          "user_id": "usr_test_001",
+          "walking_met": true
+        }
+      },
+      "DailyTargetsSchema": {
+        "properties": {
+          "sleep_target_hours": {
+            "type": "number",
+            "title": "Sleep Target Hours",
+            "description": "Target jam tidur per hari"
+          },
+          "walking_target_minutes": {
+            "type": "integer",
+            "title": "Walking Target Minutes",
+            "description": "Target menit jalan kaki per hari"
+          },
+          "nutrition_goal": {
+            "type": "string",
+            "title": "Nutrition Goal",
+            "description": "Fokus panduan nutrisi harian"
+          }
+        },
+        "type": "object",
+        "required": [
+          "sleep_target_hours",
+          "walking_target_minutes",
+          "nutrition_goal"
+        ],
+        "title": "DailyTargetsSchema"
+      },
+      "Day30PredictionInput": {
+        "properties": {
+          "patient_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Patient Id",
+            "description": "ID Pasien/Pengguna",
+            "default": "usr_test_001"
+          },
+          "glucose_month1_mean": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Glucose Month1 Mean",
+            "description": "Rata-rata Glukosa Bulan ke-1 (mg/dL)",
+            "default": 98.5
+          },
+          "steps_month1_mean": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Steps Month1 Mean",
+            "description": "Rata-rata Langkah Harian Bulan ke-1",
+            "default": 7500.0
+          },
+          "adherence_pct": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Adherence Pct",
+            "description": "Tingkat Kepatuhan Logging Aktivitas (%)",
+            "default": 90.0
+          },
+          "records": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Records",
+            "description": "Array log telemetri harian bulan ke-1 (opsional)"
+          }
+        },
+        "type": "object",
+        "title": "Day30PredictionInput",
+        "example": {
+          "adherence_pct": 90.0,
+          "glucose_month1_mean": 98.5,
+          "patient_id": "usr_test_001",
+          "steps_month1_mean": 7500.0
+        }
+      },
+      "Day30PredictionResponse": {
+        "properties": {
+          "score": {
+            "type": "integer",
+            "title": "Score",
+            "description": "Skor trajektori keberhasilan pemulihan (0-100)"
+          },
+          "risk_level": {
+            "type": "string",
+            "title": "Risk Level",
+            "description": "Kategori risiko trajektori ('Low' atau 'Medium')"
+          },
+          "trajectory_status": {
+            "type": "string",
+            "title": "Trajectory Status",
+            "description": "Arah lintasan metabolisme ('Membaik' atau 'Memburuk / Stagnan')"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary",
+            "description": "Ringkasan evaluasi trajektori AI bulan ke-1"
+          },
+          "recommendations": {
+            "type": "string",
+            "title": "Recommendations",
+            "description": "Rekomendasi tindakan penyesuaian gaya hidup"
+          },
+          "improving_score_percent": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Improving Score Percent",
+            "description": "Peluang perbaikan metabolisme di Hari ke-90 (%)"
+          }
+        },
+        "type": "object",
+        "required": [
+          "score",
+          "risk_level",
+          "trajectory_status",
+          "summary",
+          "recommendations"
+        ],
+        "title": "Day30PredictionResponse",
+        "example": {
+          "improving_score_percent": 96.3,
+          "recommendations": "Pertahankan konsistensi jam tidur dan aktivitas fisik harian Anda saat ini.",
+          "risk_level": "Low",
+          "score": 96,
+          "summary": "Tren metabolisme dan kepatuhan gaya hidup Anda di Bulan ke-1 menunjukkan proyeksi positif untuk hari ke-90.",
+          "trajectory_status": "Membaik"
+        }
+      },
+      "Day90PredictionInput": {
+        "properties": {
+          "patient_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Patient Id",
+            "description": "ID Pasien/Pengguna",
+            "default": "usr_test_001"
+          },
+          "month1_glucose_values": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Month1 Glucose Values",
+            "description": "Daftar nilai glukosa puasa bulan ke-1 (mg/dL)",
+            "default": [
+              108.0,
+              105.0,
+              102.0
+            ]
+          },
+          "month3_glucose_values": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Month3 Glucose Values",
+            "description": "Daftar nilai glukosa puasa bulan ke-3 (mg/dL)",
+            "default": [
+              96.0,
+              94.0,
+              92.0
+            ]
+          }
+        },
+        "type": "object",
+        "title": "Day90PredictionInput",
+        "example": {
+          "month1_glucose_values": [
+            108.0,
+            105.0,
+            102.0
+          ],
+          "month3_glucose_values": [
+            96.0,
+            94.0,
+            92.0
+          ],
+          "patient_id": "usr_test_001"
+        }
+      },
+      "Day90PredictionResponse": {
+        "properties": {
+          "score": {
+            "type": "integer",
+            "title": "Score",
+            "description": "Skor evaluasi akhir program 90 hari (0-100)"
+          },
+          "risk_level": {
+            "type": "string",
+            "title": "Risk Level",
+            "description": "Status risiko akhir ('Low' atau 'Medium')"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary",
+            "description": "Pernyataan evaluasi keberhasilan 90 hari"
+          },
+          "recommendations": {
+            "type": "string",
+            "title": "Recommendations",
+            "description": "Panduan menjaga kestabilan glukosa jangka panjang"
+          }
+        },
+        "type": "object",
+        "required": [
+          "score",
+          "risk_level",
+          "summary",
+          "recommendations"
+        ],
+        "title": "Day90PredictionResponse",
+        "example": {
+          "recommendations": "Pertahankan kebiasaan makan sehat dan olahraga rutin secara konsisten.",
+          "risk_level": "Low",
+          "score": 92,
+          "summary": "Selamat! Program 90 Hari GluCare berhasil diselesaikan dengan hasil positif."
+        }
+      },
+      "EnrollPredictionInput": {
+        "properties": {
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id",
+            "description": "ID Pengguna",
+            "default": "usr_test_001"
+          },
+          "risk_level": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Risk Level",
+            "description": "Tingkat risiko klinis AI (Normal / Prediabetes / Diabetes)",
+            "default": "Prediabetes"
+          },
+          "glucose_fasting": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Glucose Fasting",
+            "description": "Kadar glukosa darah puasa terakhir (mg/dL)",
+            "default": 105.0
+          },
+          "bmi": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Bmi",
+            "description": "Indeks Massa Tubuh (BMI)",
+            "default": 26.5
+          }
+        },
+        "type": "object",
+        "title": "EnrollPredictionInput",
+        "example": {
+          "bmi": 26.5,
+          "glucose_fasting": 105.0,
+          "risk_level": "Prediabetes",
+          "user_id": "usr_test_001"
+        }
+      },
+      "EnrollPredictionResponse": {
+        "properties": {
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id",
+            "description": "ID Pengguna"
+          },
+          "program_status": {
+            "type": "string",
+            "title": "Program Status",
+            "description": "Status pendaftaran ('enrolled')"
+          },
+          "duration_days": {
+            "type": "integer",
+            "title": "Duration Days",
+            "description": "Durasi program intervensi (90 hari)"
+          },
+          "program_type": {
+            "type": "string",
+            "title": "Program Type",
+            "description": "Tipe program spesifik sesuai tingkat risiko klinis"
+          },
+          "daily_targets": {
+            "$ref": "#/components/schemas/DailyTargetsSchema",
+            "description": "Preskripsi target harian 3 pilar yang dipersonalisasi"
+          },
+          "streak_counter": {
+            "type": "integer",
+            "title": "Streak Counter",
+            "description": "Penghitung konsistensi awal (0)"
+          },
+          "recommendation_summary": {
+            "type": "string",
+            "title": "Recommendation Summary",
+            "description": "Rasional ilmiah di balik preskripsi program"
+          }
+        },
+        "type": "object",
+        "required": [
+          "program_status",
+          "duration_days",
+          "program_type",
+          "daily_targets",
+          "streak_counter",
+          "recommendation_summary"
+        ],
+        "title": "EnrollPredictionResponse",
+        "example": {
+          "daily_targets": {
+            "nutrition_goal": "Defisit Kalori Ringan, Serat >= 30g/hari, Hindari Minuman Manis (Reversal Prediabetes)",
+            "sleep_target_hours": 8.0,
+            "walking_target_minutes": 40
+          },
+          "duration_days": 90,
+          "program_status": "enrolled",
+          "program_type": "Prediabetes Reversal 90-Day Plan",
+          "recommendation_summary": "AI merekomendasikan program pemulihan prediabetes: target jalan 40 menit dan tidur 8 jam selama 90 hari.",
+          "streak_counter": 0,
+          "user_id": "usr_test_001"
+        }
+      },
+      "ErrorResponse": {
+        "properties": {
+          "detail": {
+            "type": "string",
+            "title": "Detail",
+            "description": "Pesan deskriptif kesalahan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "title": "ErrorResponse",
+        "example": {
+          "detail": "Parameter data tidak valid atau model belum dimuat"
+        }
+      },
+      "GlucosePredictionInput": {
+        "properties": {
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id",
+            "description": "ID Pengguna",
+            "default": "usr_test_001"
+          },
+          "day": {
+            "type": "integer",
+            "title": "Day",
+            "description": "Hari ke- dalam program (1 sampai 90)",
+            "default": 1
+          },
+          "glucose_value": {
+            "type": "number",
+            "title": "Glucose Value",
+            "description": "Kadar gula darah harian dalam mg/dL",
+            "default": 104.0
+          },
+          "fasting": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fasting",
+            "description": "Apakah pengukuran kondisi puasa (True/False)",
+            "default": true
+          }
+        },
+        "type": "object",
+        "title": "GlucosePredictionInput",
+        "example": {
+          "day": 1,
+          "fasting": true,
+          "glucose_value": 104.0,
+          "user_id": "usr_test_001"
+        }
+      },
+      "GlucosePredictionResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Status penyimpanan ('saved')"
+          },
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id",
+            "description": "ID Pengguna"
+          },
+          "day": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Day",
+            "description": "Hari ke- dalam program"
+          },
+          "glucose_value": {
+            "type": "number",
+            "title": "Glucose Value",
+            "description": "Kadar gula darah yang dimasukkan (mg/dL)"
+          },
+          "category": {
+            "type": "string",
+            "title": "Category",
+            "description": "Kategori zona glukosa menurut kriteria ADA"
+          },
+          "is_safe": {
+            "type": "boolean",
+            "title": "Is Safe",
+            "description": "Indikator apakah kadar berada dalam batas aman"
+          },
+          "ai_insight": {
+            "type": "string",
+            "title": "Ai Insight",
+            "description": "Penjelasan klinis mengenai kadar gula darah"
+          },
+          "recommended_action": {
+            "type": "string",
+            "title": "Recommended Action",
+            "description": "Tindakan intervensi segera yang direkomendasikan"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "glucose_value",
+          "category",
+          "is_safe",
+          "ai_insight",
+          "recommended_action"
+        ],
+        "title": "GlucosePredictionResponse",
+        "example": {
+          "ai_insight": "Kadar glukosa darah Anda (104.0 mg/dL) berada di rentang Prediabetes (100 - 125 mg/dL). Ini merupakan sinyal dini toleransi glukosa terganggu, namun masih dalam golden window untuk pemulihan.",
+          "category": "Prediabetes Alert (Zona Intervensi)",
+          "day": 1,
+          "glucose_value": 104.0,
+          "is_safe": false,
+          "recommended_action": "Minum 1-2 gelas air putih, hindari camilan manis, dan lakukan jalan santai 15 menit untuk memicu serapan glukosa otot.",
+          "status": "saved",
+          "user_id": "usr_test_001"
+        }
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthCheckResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Status server ('ok')"
+          },
+          "service": {
+            "type": "string",
+            "title": "Service",
+            "description": "Nama layanan microservice"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version",
+            "description": "Versi AI Engine"
+          },
+          "models_loaded": {
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "type": "object",
+            "title": "Models Loaded",
+            "description": "Status kesiapan pemuatan setiap model ML"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "service",
+          "version",
+          "models_loaded"
+        ],
+        "title": "HealthCheckResponse",
+        "example": {
+          "models_loaded": {
+            "clinical": true,
+            "monitoring_day30": true,
+            "questionnaire": true
+          },
+          "service": "GluCare AI Local Microservice",
+          "status": "ok",
+          "version": "2.1.0"
+        }
+      },
+      "QuestionnairePredictionInput": {
+        "properties": {
+          "user_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id",
+            "description": "ID Pengguna (opsional)",
+            "default": "usr_test_001"
+          },
+          "age_band": {
+            "type": "integer",
+            "title": "Age Band",
+            "description": "Kelompok Usia (0: <30 tahun, 1: 30-39 tahun)",
+            "default": 1
+          },
+          "gender": {
+            "type": "integer",
+            "title": "Gender",
+            "description": "Jenis Kelamin (1: Laki-laki, 2: Perempuan)",
+            "default": 2
+          },
+          "bmi_category": {
+            "type": "integer",
+            "title": "Bmi Category",
+            "description": "Kategori BMI Standar Asia (0: Normal <23, 1: Overweight 23-27.4, 2: Obesitas >=27.5)",
+            "default": 1
+          },
+          "waist_category": {
+            "type": "integer",
+            "title": "Waist Category",
+            "description": "Lingkar Pinggang Berisiko (0: Normal [Pria<=90, Wanita<=80], 1: Berisiko [Pria>90, Wanita>80])",
+            "default": 1
+          },
+          "hypertension": {
+            "type": "integer",
+            "title": "Hypertension",
+            "description": "Riwayat Hipertensi / Tekanan Darah Tinggi (0: Tidak, 1: Ya)",
+            "default": 0
+          },
+          "diabetes_history": {
+            "type": "integer",
+            "title": "Diabetes History",
+            "description": "Riwayat Diabetes Diri Sendiri (0: Tidak, 1: Ya)",
+            "default": 0
+          },
+          "prediabetes_told": {
+            "type": "integer",
+            "title": "Prediabetes Told",
+            "description": "Pernah Diberitahu Dokter Borderline / Prediabetes (0: Tidak, 1: Ya)",
+            "default": 0
+          },
+          "prediabetes_history": {
+            "type": "integer",
+            "title": "Prediabetes History",
+            "description": "Riwayat Prediabetes / Keluarga Diabetes (0: Tidak, 1: Ya)",
+            "default": 0
+          },
+          "physically_active": {
+            "type": "integer",
+            "title": "Physically Active",
+            "description": "Aktivitas Fisik >=150 menit/minggu rekomendasi WHO (0: Tidak, 1: Ya)",
+            "default": 0
+          },
+          "sedentary_hours": {
+            "type": "number",
+            "title": "Sedentary Hours",
+            "description": "Durasi Duduk / Tidak Aktif Fisik per hari (jam)",
+            "default": 6.0
+          },
+          "current_smoker": {
+            "type": "integer",
+            "title": "Current Smoker",
+            "description": "Status Perokok Aktif (0: Tidak, 1: Ya)",
+            "default": 0
+          },
+          "poor_diet": {
+            "type": "integer",
+            "title": "Poor Diet",
+            "description": "Pola Makan Kurang Sehat / Tinggi Gula Sederhana (0: Tidak, 1: Ya)",
+            "default": 1
+          },
+          "overweight_history": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Overweight History",
+            "description": "[Legacy] Riwayat kelebihan berat badan (0: Tidak, 1: Ya)",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "title": "QuestionnairePredictionInput",
+        "example": {
+          "age_band": 1,
+          "bmi_category": 1,
+          "current_smoker": 0,
+          "diabetes_history": 0,
+          "gender": 2,
+          "hypertension": 0,
+          "physically_active": 0,
+          "poor_diet": 1,
+          "prediabetes_history": 0,
+          "prediabetes_told": 0,
+          "sedentary_hours": 6.0,
+          "user_id": "usr_test_001",
+          "waist_category": 1
+        }
+      },
+      "QuestionnairePredictionResponse": {
+        "properties": {
+          "prediction": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array",
+            "title": "Prediction",
+            "description": "Prediksi kelas model (0: Normal, 1: Prediabetes)"
+          },
+          "predict_proba": {
+            "items": {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            "type": "array",
+            "title": "Predict Proba",
+            "description": "Array probabilitas model [P(Normal), P(Prediabetes), 0.0]"
+          },
+          "risk_level": {
+            "type": "string",
+            "title": "Risk Level",
+            "description": "Kategori risiko gaya hidup ('Normal' atau 'Prediabetes')"
+          },
+          "score": {
+            "type": "integer",
+            "title": "Score",
+            "description": "Skor risiko gaya hidup dalam persen (0-100%)"
+          },
+          "probability_prediabetes": {
+            "type": "number",
+            "title": "Probability Prediabetes",
+            "description": "Probabilitas model prediabetes (0.0000 - 1.0000)"
+          },
+          "probability_normal": {
+            "type": "number",
+            "title": "Probability Normal",
+            "description": "Probabilitas model normal (0.0000 - 1.0000)"
+          },
+          "model_source": {
+            "type": "string",
+            "title": "Model Source",
+            "description": "Arsitektur model inferensi ('ML (NHANES 2021-2023)' atau 'heuristic-fallback')"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary",
+            "description": "Ringkasan interpretasi gaya hidup dari AI"
+          }
+        },
+        "type": "object",
+        "required": [
+          "prediction",
+          "predict_proba",
+          "risk_level",
+          "score",
+          "probability_prediabetes",
+          "probability_normal",
+          "model_source",
+          "summary"
+        ],
+        "title": "QuestionnairePredictionResponse",
+        "example": {
+          "model_source": "ML (NHANES 2021-2023)",
+          "predict_proba": [
+            [
+              0.18,
+              0.82,
+              0.0
+            ]
+          ],
+          "prediction": [
+            1
+          ],
+          "probability_normal": 0.18,
+          "probability_prediabetes": 0.82,
+          "risk_level": "Prediabetes",
+          "score": 82,
+          "summary": "Analisis kuesioner gaya hidup menunjukkan tingkat risiko: Prediabetes (Skor: 82%)"
+        }
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "1. Skrining Risiko (Clinical & Questionnaire)",
+      "description": "Endpoint inferensi AI untuk deteksi dini risiko prediabetes: melalui parameter laboratorium klinis lengkap (Random Forest) atau kuesioner gaya hidup non-invasif 12 faktor (NHANES ML Classifier)."
+    },
+    {
+      "name": "2. Monitoring Intervensi 90 Hari (Milestone)",
+      "description": "Evaluasi pencapaian lintasan metabolisme (trajectory tracking) pada Hari ke-30 (XGBoost Classifier) dan evaluasi capaian akhir program pada Hari ke-90."
+    },
+    {
+      "name": "3. Telemetri Harian & Glukosa (Daily Tracking)",
+      "description": "Pencatatan dan analisis harian waktu nyata untuk 3 pilar gaya hidup (tidur, jalan kaki, nutrisi) serta triase klinis gula darah mandiri berdasarkan standar ADA."
+    },
+    {
+      "name": "4. Preskripsi Program Intervensi (Enrollment)",
+      "description": "Algoritma rekomendasi otomatis dan penyesuaian target harian personal untuk program intervensi 90 hari berbasis profil risiko metabolik pengguna."
+    },
+    {
+      "name": "5. Diagnostic & System Health",
+      "description": "Pemeriksaan status kesehatan microservice, verifikasi kesiapan model Machine Learning dalam memori, dan ekspor spesifikasi Swagger/OpenAPI."
+    }
+  ]
+}
