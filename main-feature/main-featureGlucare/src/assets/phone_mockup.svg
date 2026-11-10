@@ -1,0 +1,215 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 680" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Outer Phone Chassis Shadow -->
+    <filter id="phoneShadow" x="-10%" y="-10%" width="125%" height="125%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="18" stdDeviation="22" flood-color="#0F172A" flood-opacity="0.28" />
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#0F172A" flood-opacity="0.12" />
+    </filter>
+
+    <!-- Subtle Card Shadow -->
+    <filter id="cardShadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.04" />
+    </filter>
+
+    <!-- Metallic Edge Gradient -->
+    <linearGradient id="chassisGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#334155" />
+      <stop offset="35%" stop-color="#1E293B" />
+      <stop offset="70%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#1E293B" />
+    </linearGradient>
+
+    <!-- Screen Glass Sheen -->
+    <linearGradient id="screenGlass" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.4" />
+      <stop offset="40%" stop-color="#FFFFFF" stop-opacity="0.05" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </linearGradient>
+
+    <clipPath id="screenClip">
+      <rect x="14" y="14" width="312" height="652" rx="40" ry="40" />
+    </clipPath>
+  </defs>
+
+  <!-- ── Phone Outer Chassis ─────────────────────────────────── -->
+  <g filter="url(#phoneShadow)">
+    <!-- Chassis Body -->
+    <rect x="6" y="6" width="328" height="668" rx="48" ry="48" fill="url(#chassisGrad)" stroke="#475569" stroke-width="2" />
+    <!-- Inner Bezel -->
+    <rect x="10" y="10" width="320" height="660" rx="44" ry="44" fill="#0A0F1D" />
+  </g>
+
+  <!-- ── Screen Area (Clipped) ────────────────────────────────── -->
+  <g clip-path="url(#screenClip)">
+    <!-- Screen Base Background -->
+    <rect x="14" y="14" width="312" height="652" fill="#F8FAFC" />
+
+    <!-- ── Status Bar ────────────────────────────────────────── -->
+    <g id="statusBar">
+      <!-- Time -->
+      <text x="38" y="38" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="12" font-weight="700" fill="#0F172A">9:41</text>
+      
+      <!-- Dynamic Island / Speaker Notch -->
+      <rect x="130" y="24" width="80" height="20" rx="10" fill="#000000" />
+      <circle cx="192" cy="34" r="3.5" fill="#1E293B" />
+      
+      <!-- Icons: Cellular, Wifi, Battery -->
+      <g transform="translate(262, 28)" fill="#0F172A">
+        <!-- Cellular bars -->
+        <rect x="0" y="7" width="2.5" height="4" rx="0.5" />
+        <rect x="4" y="5" width="2.5" height="6" rx="0.5" />
+        <rect x="8" y="3" width="2.5" height="8" rx="0.5" />
+        <rect x="12" y="1" width="2.5" height="10" rx="0.5" />
+        
+        <!-- Battery -->
+        <rect x="20" y="2" width="18" height="9" rx="2.5" fill="none" stroke="#0F172A" stroke-width="1.5" />
+        <rect x="22" y="4" width="12" height="5" rx="1" fill="#0F172A" />
+        <path d="M39 5.5v2" stroke="#0F172A" stroke-width="1.5" stroke-linecap="round" />
+      </g>
+    </g>
+
+    <!-- ── Top App Header ────────────────────────────────────── -->
+    <g id="appHeader" transform="translate(0, 56)">
+      <!-- Back Chevron -->
+      <path d="M34 22L28 16L34 10" stroke="#0F172A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+      
+      <!-- GluCare Brand Logo -->
+      <g transform="translate(112, 6)">
+        <path d="M12 2C8 6 6 11 12 18C18 11 16 6 12 2Z" fill="#00A896" />
+        <path d="M12 18C15 14 20 12 20 7" stroke="#10B981" stroke-width="1.8" stroke-linecap="round" fill="none" />
+        <text x="24" y="15" font-family="'Baloo 2', 'Plus Jakarta Sans', cursive, sans-serif" font-size="18" font-weight="800" fill="#0F172A" letter-spacing="-0.5">GluCare<tspan fill="#00A896">.</tspan></text>
+      </g>
+
+      <!-- Notification Bell with Alert Dot -->
+      <g transform="translate(290, 8)">
+        <path d="M8 2C5.8 2 4 3.8 4 6V10L2 12V13H14V12L12 10V6C12 3.8 10.2 2 8 2Z" fill="none" stroke="#0F172A" stroke-width="1.8" stroke-linejoin="round" />
+        <path d="M6.5 14C6.8 14.6 7.4 15 8 15C8.6 15 9.2 14.6 9.5 14" stroke="#0F172A" stroke-width="1.8" stroke-linecap="round" />
+        <circle cx="12" cy="3" r="2.5" fill="#EF4444" />
+      </g>
+    </g>
+
+    <!-- ── Greeting Section ──────────────────────────────────── -->
+    <g id="greeting" transform="translate(28, 116)">
+      <text x="0" y="16" font-family="'Baloo 2', 'Plus Jakarta Sans', cursive, sans-serif" font-size="20" font-weight="800" fill="#0F2038">Halo, Dina!</text>
+      <text x="0" y="35" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="11" font-weight="500" fill="#64748B">Yuk, lanjutkan perjalanan hidup sehatmu hari ini! ✨</text>
+    </g>
+
+    <!-- ── Card: Program 90 Hari ─────────────────────────────── -->
+    <g id="programCard" transform="translate(26, 170)" filter="url(#cardShadow)">
+      <!-- Card Container -->
+      <rect x="0" y="0" width="288" height="84" rx="20" fill="#FFFFFF" stroke="#DBEAFE" stroke-width="1.5" />
+      
+      <!-- Star Icon Badge -->
+      <rect x="14" y="14" width="38" height="38" rx="12" fill="#2563EB" />
+      <path d="M33 24L35 28.5L40 29.2L36.3 32.7L37.2 37.6L33 35.3L28.8 37.6L29.7 32.7L26 29.2L31 28.5L33 24Z" fill="#FBBF24" />
+
+      <!-- Title & Chevron -->
+      <text x="62" y="29" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="13" font-weight="700" fill="#1E293B">Program 90 Hari</text>
+      <path d="M266 24L270 28L266 32" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      
+      <!-- Subtitle -->
+      <text x="62" y="45" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="10.5" font-weight="500" fill="#64748B">Hari ke-12 dari 90</text>
+
+      <!-- Progress Bar Track -->
+      <rect x="62" y="58" width="176" height="8" rx="4" fill="#EFF6FF" stroke="#DBEAFE" stroke-width="1" />
+      <!-- Progress Bar Fill (13%) -->
+      <rect x="62" y="58" width="24" height="8" rx="4" fill="url(#blueFill)" />
+      <!-- Percentage Text -->
+      <text x="246" y="66" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="10" font-weight="700" fill="#2563EB">13%</text>
+    </g>
+
+    <linearGradient id="blueFill" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </linearGradient>
+
+    <!-- ── 2x2 Feature / Bio-Habit Tracking Grid ─────────────── -->
+    <g id="featureGrid" transform="translate(26, 272)">
+      <!-- Card 1: Aktivitas Harian (Cyan) -->
+      <g transform="translate(0, 0)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="138" height="96" rx="18" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+        <!-- Icon Badge -->
+        <rect x="12" y="12" width="36" height="36" rx="10" fill="#E0F2FE" />
+        <!-- Sneaker vector -->
+        <path d="M22 36C22 36 24 38 29 38C34 38 38 34 38 31C38 28 35 26 31 26L28 29L24 29" stroke="#0284C7" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+        <circle cx="27" cy="27" r="1.5" fill="#0284C7" />
+        <text x="12" y="68" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="11" font-weight="700" fill="#1E293B">Aktivitas</text>
+        <text x="12" y="82" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="11" font-weight="700" fill="#1E293B">Harian</text>
+      </g>
+
+      <!-- Card 2: Asupan Makanan (Orange) -->
+      <g transform="translate(150, 0)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="138" height="96" rx="18" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+        <!-- Icon Badge -->
+        <rect x="12" y="12" width="36" height="36" rx="10" fill="#FFEDD5" />
+        <!-- Fork & Knife vector -->
+        <path d="M25 22V36M22 22V28C22 29.5 23.5 31 25 31C26.5 31 28 29.5 28 28V22" stroke="#EA580C" stroke-width="2" stroke-linecap="round" fill="none" />
+        <path d="M34 22V36M34 22C31.5 24 31.5 28 34 29" stroke="#EA580C" stroke-width="2" stroke-linecap="round" fill="none" />
+        <text x="12" y="68" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="11" font-weight="700" fill="#1E293B">Asupan</text>
+        <text x="12" y="82" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="11" font-weight="700" fill="#1E293B">Makanan</text>
+      </g>
+
+      <!-- Card 3: Tidur (Purple) -->
+      <g transform="translate(0, 110)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="138" height="96" rx="18" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+        <!-- Icon Badge -->
+        <rect x="12" y="12" width="36" height="36" rx="10" fill="#F3E8FF" />
+        <!-- Crescent Moon vector -->
+        <path d="M34 28C33 33 28.5 37 23.5 35.5C21 34.5 19 32 19 29C23 29.5 26.5 27 27.5 23C27.5 22.5 27.5 22 27.5 21.5C32 22.5 34.5 25 34 28Z" fill="#9333EA" />
+        <circle cx="36" cy="21" r="1" fill="#C084FC" />
+        <circle cx="21" cy="21" r="1.2" fill="#C084FC" />
+        <text x="12" y="74" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="12" font-weight="700" fill="#1E293B">Tidur</text>
+      </g>
+
+      <!-- Card 4: Insight AI (Emerald) -->
+      <g transform="translate(150, 110)" filter="url(#cardShadow)">
+        <rect x="0" y="0" width="138" height="96" rx="18" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1" />
+        <!-- Icon Badge -->
+        <rect x="12" y="12" width="36" height="36" rx="10" fill="#DCFCE7" />
+        <!-- Growth Chart vector -->
+        <rect x="22" y="31" width="3" height="7" rx="1.5" fill="#16A34A" />
+        <rect x="28" y="27" width="3" height="11" rx="1.5" fill="#16A34A" />
+        <rect x="34" y="22" width="3" height="16" rx="1.5" fill="#16A34A" />
+        <text x="12" y="74" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="12" font-weight="700" fill="#1E293B">Insight AI</text>
+      </g>
+    </g>
+
+    <!-- ── Bottom Navigation Bar ─────────────────────────────── -->
+    <g id="bottomNav" transform="translate(14, 576)">
+      <!-- Nav Container -->
+      <rect x="0" y="0" width="312" height="90" fill="#FFFFFF" stroke="#F1F5F9" stroke-width="1.5" />
+      
+      <!-- Item 1: Beranda (Active) -->
+      <g transform="translate(24, 8)">
+        <path d="M14 6L6 13V22H11V16H17V22H22V13L14 6Z" fill="#2563EB" />
+        <text x="14" y="32" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="9" font-weight="700" fill="#2563EB" text-anchor="middle">Beranda</text>
+      </g>
+
+      <!-- Item 2: Program -->
+      <g transform="translate(98, 8)">
+        <rect x="7" y="7" width="14" height="15" rx="3" fill="none" stroke="#94A3B8" stroke-width="1.8" />
+        <path d="M10 5V8M18 5V8M11 12H17M11 16H15" stroke="#94A3B8" stroke-width="1.5" stroke-linecap="round" />
+        <text x="14" y="32" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748B" text-anchor="middle">Program</text>
+      </g>
+
+      <!-- Item 3: Insight -->
+      <g transform="translate(172, 8)">
+        <path d="M8 19L12 14L16 17L21 11M21 11H17M21 11V15" fill="none" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        <text x="14" y="32" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748B" text-anchor="middle">Insight</text>
+      </g>
+
+      <!-- Item 4: Profil -->
+      <g transform="translate(246, 8)">
+        <circle cx="14" cy="11" r="4.5" fill="none" stroke="#94A3B8" stroke-width="1.8" />
+        <path d="M7 21C7 17.5 10 16.5 14 16.5C18 16.5 21 17.5 21 21" fill="none" stroke="#94A3B8" stroke-width="1.8" stroke-linecap="round" />
+        <text x="14" y="32" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="9" font-weight="600" fill="#64748B" text-anchor="middle">Profil</text>
+      </g>
+
+      <!-- iPhone Home Indicator Bar -->
+      <rect x="96" y="58" width="120" height="4.5" rx="2.5" fill="#0F172A" opacity="0.8" />
+    </g>
+
+    <!-- Glass Reflection overlay on screen -->
+    <rect x="14" y="14" width="312" height="652" fill="url(#screenGlass)" pointer-events="none" />
+  </g>
+</svg>
