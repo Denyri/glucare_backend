@@ -3,53 +3,33 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FaHome, FaList, FaCalendar, FaRobot, FaCog, FaBars, FaSignOutAlt, FaChartPie } from "react-icons/fa";
 import defaultProfile from "../assets/Profile.jpg"
 import { useSidebar } from "../hooks/useSidebar";
-import api from "../api";
+
+import { useAuth } from "../context/AuthContext";
+import { authService } from "../services";
 
 function Sidebar() {
     const location = useLocation();
     const navigate = useNavigate();
     const { isOpen, setIsOpen } = useSidebar();
+    const { user: currentUser, updateUser, logout } = useAuth();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [currentUser, setCurrentUser] = useState(null);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     useEffect(() => {
-        const getUser = async () => {
-            let user = null;
-            try {
-                const rawUser = localStorage.getItem("currentUser") || sessionStorage.getItem("currentUser");
-                if (rawUser && rawUser !== "undefined") {
-                    user = JSON.parse(rawUser);
-                }
-            } catch (e) { console.error("Error parsing user in Sidebar", e); }
-
-            const token = localStorage.getItem("token") || 
-            sessionStorage.getItem("token");
-
-            if (user && user.id) {
+        const refreshProfile = async () => {
+            if (currentUser && currentUser.id) {
                 try {
-                    const response = await api.get(`/api/auth/profile/${user.id}`,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    );
-                    setCurrentUser(response.data);
-                    localStorage.setItem("currentUser", JSON.stringify(response.data));
+                    const response = await authService.getProfile(currentUser.id);
+                    if (response) {
+                        updateUser(response);
+                    }
                 } catch (error) {
-                    console.error("Gagal ambil data user di Sidebar:", error);
-                    setCurrentUser(user);
+                    // Profile fetch fallback, keep existing context user
                 }
-            } else {
-                setCurrentUser(user);
             }
-    }; 
+        };
 
-    getUser();
-
-    window.addEventListener("focus", getUser);
-    return () => window.removeEventListener("focus", getUser);
+        refreshProfile();
     }, [location.pathname]);
 
     const isMenuActive = (item) => {
@@ -264,14 +244,9 @@ function Sidebar() {
                             </button>
                             <button 
                                 onClick={() => {
-                                    localStorage.removeItem("currentUser");
-                                    sessionStorage.removeItem("currentUser");
-                                    localStorage.removeItem("token");
-                                    sessionStorage.removeItem("token");
-                                    
+                                    logout();
                                     setShowLogoutModal(false);
                                     if (window.innerWidth < 1024) setIsMobileMenuOpen(false);
-                                    
                                     navigate("/login");
                                 }}
                                 className="flex-1 px-4 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white transition-colors shadow-md font-bold"

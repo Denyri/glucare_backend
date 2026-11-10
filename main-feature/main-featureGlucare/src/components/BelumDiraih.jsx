@@ -1,32 +1,32 @@
-export default function BelumDiraih ({
-    icon = "🔥", title,description,xp,
-}) {
+import { Lock, Zap } from "lucide-react";
+
+export default function BelumDiraih({ icon: IconComponent, title, description, xp, tier = "Bronze" }) {
+    const isFunctionIcon = typeof IconComponent === "function";
+
     return (
-        <div className="group relative bg-white border border-gray-100 rounded-2xl p-5 flex items-center justify-between hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:border-gray-200 transition-all duration-300 overflow-hidden">
-            {/* Subtle background shift on hover */}
-            <div className="absolute inset-0 bg-gray-50/50 group-hover:bg-transparent transition-colors duration-300"></div>
-            
-            <div className="relative z-10 flex items-center gap-5">
-                {/* Locked Icon Container */}
-                <div className="w-14 h-14 rounded-xl bg-gray-100/80 flex items-center justify-center text-3xl grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 group-hover:bg-gray-100 group-hover:scale-105 transition-all duration-500 shadow-inner">
-                    <span className="drop-shadow-sm">{icon}</span>
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4.5 sm:p-5 flex items-center justify-between gap-4 shadow-sm hover:border-slate-300 transition-all">
+            <div className="flex items-center gap-3.5 min-w-0">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 opacity-60 shrink-0">
+                    {isFunctionIcon ? (
+                        <IconComponent className="w-6 h-6" strokeWidth={1.8} />
+                    ) : (
+                        <Lock className="w-5 h-5 text-slate-400" />
+                    )}
                 </div>
 
-                <div>
-                    <div className="flex items-center gap-2 mb-1">
-                        <span className="material-symbols-outlined text-[16px] text-gray-400 group-hover:text-gray-500 transition-colors">lock</span>
-                        <p className="text-base font-bold text-gray-700 group-hover:text-gray-900 transition-colors">{title}</p>
+                <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 mb-0.5">
+                        <Lock className="w-3.5 h-3.5 text-slate-400" />
+                        <h4 className="text-sm font-bold text-slate-700 truncate">{title}</h4>
                     </div>
-                    <p className="text-sm text-gray-500 leading-relaxed max-w-sm">{description}</p>
+                    <p className="text-xs text-slate-400 line-clamp-1 leading-snug">{description}</p>
                 </div>
             </div>
 
             {xp && (
-                <div className="relative z-10 flex flex-col items-end">
-                    <div className="flex items-center gap-1 bg-gray-100/80 group-hover:bg-gray-100 text-gray-400 group-hover:text-gray-600 px-3 py-1.5 rounded-full text-xs font-bold transition-all">
-                        <span className="material-symbols-outlined text-[14px]">bolt</span>
-                        +{xp} XP
-                    </div>
+                <div className="shrink-0 flex items-center gap-1 text-slate-400 font-mono text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100">
+                    <Zap className="w-3 h-3 text-slate-400" />
+                    <span>+{xp} XP</span>
                 </div>
             )}
         </div>

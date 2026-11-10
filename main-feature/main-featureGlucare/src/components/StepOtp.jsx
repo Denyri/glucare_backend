@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import api from "../api";
+import authService from "../services/authService";
 
 const StepOtp = ({ email, onSuccess, onBack }) => {
     const [otp, setOtp] = useState('');
@@ -27,12 +27,12 @@ const StepOtp = ({ email, onSuccess, onBack }) => {
         setLoading(true);
 
         try {
-        const res = await api.post('/api/auth/verify-otp', { email, otp });
-        onSuccess(res.data.resetToken);
+            const data = await authService.verifyOtp({ email, otp });
+            onSuccess(data.resetToken);
         } catch (err) {
-        setError(err.response?.data?.message || 'OTP tidak valid');
+            setError(err.response?.data?.message || 'OTP tidak valid');
         } finally {
-        setLoading(false);
+            setLoading(false);
         }
     };
 
@@ -40,13 +40,13 @@ const StepOtp = ({ email, onSuccess, onBack }) => {
         setResending(true);
         setError('');
         try {
-        await api.post('/api/auth/forgot-password', { email });
-        setCountdown(300);
-        setOtp('');
+            await authService.forgotPassword(email);
+            setCountdown(300);
+            setOtp('');
         } catch (err) {
-        setError('Gagal mengirim ulang OTP');
+            setError('Gagal mengirim ulang OTP');
         } finally {
-        setResending(false);
+            setResending(false);
         }
     };
 

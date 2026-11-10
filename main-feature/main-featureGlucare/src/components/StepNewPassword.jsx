@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import api from "../api";
+import authService from "../services/authService";
 import { FaKey } from "react-icons/fa";
 
 const StepNewPassword = ({ resetToken, onSuccess }) => {
@@ -25,16 +25,16 @@ const StepNewPassword = ({ resetToken, onSuccess }) => {
 
         setLoading(true);
         try {
-        await api.post('/api/auth/reset-password', {
-            resetToken,
-            newPassword: form.newPassword,
-            confirmPassword: form.confirmPassword,
-        });
-        onSuccess();
+            await authService.resetPassword({
+                resetToken,
+                newPassword: form.newPassword,
+                confirmPassword: form.confirmPassword,
+            });
+            onSuccess();
         } catch (err) {
-        setError(err.response?.data?.message || 'Terjadi kesalahan');
+            setError(err.response?.data?.message || 'Terjadi kesalahan');
         } finally {
-        setLoading(false);
+            setLoading(false);
         }
     };
 

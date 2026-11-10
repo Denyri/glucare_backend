@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
-import api from "../api";
+import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 export default function InputHarian() {
+    const { isAuthenticated } = useAuth();
     const [sudahInput, setSudahInput] = useState(false);
     const [todayData, setTodayData] = useState(null);
     const [loadingCheck, setLoadingCheck] = useState(true);
@@ -18,15 +20,12 @@ export default function InputHarian() {
 
     useEffect(() => {
         const cekHariIni = async () => {
+            if (!isAuthenticated) {
+                setLoadingCheck(false);
+                return;
+            }
             try {
-                const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-                if (!token) {
-                    setLoadingCheck(false);
-                    return;
-                }
-                const res = await api.get("/api/daily-logs/today", {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
+                const res = await api.get("/api/daily-logs/today");
                 setSudahInput(res.data.sudah_input);
                 setTodayData(res.data.data);
             } catch (err) {
@@ -36,7 +35,7 @@ export default function InputHarian() {
             }
         };
         cekHariIni();
-    }, []);
+    }, [isAuthenticated]);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -57,8 +56,7 @@ export default function InputHarian() {
 
         setSubmitting(true);
         try {
-            const token = localStorage.getItem("token") || sessionStorage.getItem("token");
-            if (!token) {
+            if (!isAuthenticated) {
                 setError("User tidak terautentikasi");
                 setSubmitting(false);
                 return;
@@ -68,8 +66,6 @@ export default function InputHarian() {
                 steps: parseInt(steps),
                 sleep_hours: parseFloat(sleep_hours),
                 carbs_g: parseFloat(carbs_g),
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             });
             setSukses(res.data);
             setSudahInput(true);

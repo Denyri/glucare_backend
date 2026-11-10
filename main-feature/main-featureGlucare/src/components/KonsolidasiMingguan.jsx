@@ -1,133 +1,107 @@
 import { useNavigate } from "react-router-dom";
-import LogoIlmiah from "../assets/FaseIntervensi/DasarIlmiah.png";
-import LogoGula from "../assets/FaseIntervensi/Gula.png";
-import LogoMakanan from "../assets/FaseIntervensi/LogMakanan.png";
-import LogoWaktu from "../assets/FaseIntervensi/Waktu.png";
-import LogoMinuman from "../assets/FaseIntervensi/Minuman.png";
-
 
 export default function KonsolidasiMingguan() {
     const navigate = useNavigate();
 
-    const targets = [
+    const weeks = [
         {
-        title: "Gula Harian",
-        value: "< 40g/hari",
-        desc: "Kurangi bertahap dari kebiasaan",
-        icon : "🍬"
+            week: "W9",
+            title: "Minggu 9: Fine-Tuning Fleksibilitas",
+            focus: "Menguji adaptasi tubuh terhadap variasi makanan sehat",
+            tasks: [
+                "Terapkan urutan makan yang tepat (Serat → Protein/Lemak → Karbohidrat)",
+                "Jaga batas gula harian maksimal ≤ 25g (bebas pemanis buatan berlebih)",
+                "Lakukan variasi rute jalan santai atau aktivitas luar ruangan 40 menit",
+                "Perhatikan stabilitas energi tubuh sepanjang siang hari",
+            ],
         },
         {
-        title: "Aktivitas",
-        value: "150 menit/minggu",
-        desc: "Kurangi 10g dari fase sebelumnya",
-        icon: "🏃‍♂️"
-        
+            week: "W10",
+            title: "Minggu 10: Manajemen Stres & Ritme Sirkadian",
+            focus: "Menurunkan stimulasi kortisol yang memicu resistensi perifer",
+            tasks: [
+                "Lakukan latihan pernapasan relaksasi 4-7-8 selama 5 menit sebelum tidur",
+                "Batasi paparan layar gawai (blue light) 45 menit sebelum tidur malam",
+                "Pastikan hidrasi pagi hari sebelum sarapan minimal 500 mL air putih",
+                "Pertahankan konsistensi streak pelacak di GluCare",
+            ],
         },
         {
-        title: "Tidur",
-        value: "7 jam/malam",
-        desc: "Jadwal tidur konsisten",
-        icon: "😴"
+            week: "W11",
+            title: "Minggu 11: Resiliensi Lingkungan & Sosial",
+            focus: "Ketahanan terhadap kemunduran saat acara kumpul atau makan di luar",
+            tasks: [
+                "Gunakan teknik 'Mindful Dining': makan perlahan dan kunyah 20–30 kali",
+                "Jika mengonsumsi karbohidrat olahan, imbangi dengan jalan 20 menit pasca makan",
+                "Lakukan uji cek glukosa darah puasa (GDP) hari ke-75",
+                "Rayakan stabilitas energi tanpa ketergantungan gula manis",
+            ],
         },
         {
-        title: "Air Putih",
-        value: "8 gelas/hari",
-        desc: "Hidrasi optimal untuk metabolisme",
-        icon: "💧"
+            week: "W12",
+            title: "Minggu 12: Penilaian Komprehensif Hari ke-90",
+            focus: "Evaluasi akhir program dan penetapan protokol seumur hidup",
+            tasks: [
+                "Lakukan pemeriksaan GDP & profil lab akhir program",
+                "Jalankan evaluasi milestone 90 hari di GluCare",
+                "Bandingkan risiko prediabetes sebelum vs sesudah program 90 hari",
+                "Buka lencana puncak: 'Program Completed' (+1000 XP)",
+            ],
         },
-    ];
-
-    const focusItems = [
-        {
-            title : "Stop Minuman Manis",
-            desc : "↓ 40% spike gula", 
-            color : "text-[#059669]",
-            icon : LogoMinuman,    
-        },
-        {
-            title : "Stop Makanan Manis",
-            desc : "↓ 26% spike gula",
-            color : "text-[#0072CE]",
-            icon : LogoGula, 
-        },
-        {
-            title : "Konsisten Waktu Makan",
-            desc : "↑ Ritme insulin",
-            color : "text-[#7C3AED]",
-            icon : LogoWaktu, 
-        },
-        {
-            title : "Log Makanan Harian",
-            desc : "↑Kesadaran pola makan",
-            color : "text-[#D97706]",
-            icon : LogoMakanan,
-        }
     ];
 
     return (
-        <div>
-
-            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 mb-6">
-            <div className="flex gap-4 items-start">
-                <img src={LogoIlmiah} alt ="Dasar Ilmiah" className="w-10 h-10 object-contain"/>
-                <div>
-                <h2 className="text-lg font-semibold text-[#7C3AED]">
-                    Dasar Ilmiah Fase 2
-                </h2>
-
-                <p className="text-[#374151] mt-2 text-sm">
-                    Di fase ini, tubuh sudah memiliki fondasi. 
-                    Kita tingkatkan intensitas untuk memaksimalkan GLUT4 (transporter glukosa) di otot rangka. 
-                    Latihan kekuatan 2x/minggu meningkatkan penyerapan glukosa otot hingga 35% (JCEM, 2022).
-                </p>
+        <div className="space-y-6">
+            {/* Tips Card */}
+            <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-5 sm:p-6">
+                <div className="flex items-start gap-3">
+                    <span className="material-symbols-outlined text-emerald-600 text-[22px] mt-0.5">psychology</span>
+                    <div>
+                        <h4 className="font-bold text-slate-800 text-sm">Prinsip Fisiologis: Homeostasis Jangka Panjang</h4>
+                        <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                            Setelah 60 hari adaptasi, tubuh telah merestrukturisasi sel-sel beta pankreas dan kepekaan reseptor insulin hepar. Mempertahankan kebiasaan di minggu 9–12 mengunci "set-point" metabolik baru ini agar tidak mudah kembali ke kondisi resisten sebelumnya.
+                        </p>
+                    </div>
                 </div>
             </div>
-            </div>
 
-            <section className="mb-8">
-            <h3 className="font-semibold text-slate-800 mb-4">Target Harian</h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 text-xs">
-                {targets.map((item, index) => (
-                <div
-                    key={index}
-                    className="bg-white rounded-2xl shadow-sm border p-5"
-                >
-                    <div className="text-3xl mb-3">{item.icon}</div>
-                    <h4 className="font-medium text-slate-700">{item.title}</h4>
-                    <p className="text-xl font-bold mt-2">{item.value}</p>
-                    <p className="text-xs text-slate-500 mt-2">{item.desc}</p>
-                </div>
-                ))}
-            </div>
-            </section>
-
-            <section>
-            <h3 className="font-semibold text-slate-800 mb-4">Fokus Utama</h3>
-
-            <div className="space-y-4 font-bold">
-                {focusItems.map((item, index) => (
-                <div
-                    key={index}
-                    className="bg-white rounded-xl border shadow-sm px-5 py-4 flex justify-between items-center"
-                >
-                    <div className="flex items-center gap-3">
-                        <img src={item.icon} alt={item.title} className="w-8 h-8 object-contain"/>
-
-                        <div>
-                            <p className="text-sm font-bold text-black"> {item.title} </p>
-                            <span className={`text-xs ${item.color}`}> {item.desc} </span>
+            {/* 4 Weekly Roadmap Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {weeks.map((item, index) => (
+                    <div key={index} className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm hover:border-emerald-300 transition">
+                        <div className="flex items-center gap-3.5 mb-3">
+                            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 font-mono font-bold text-sm flex items-center justify-center border border-emerald-100 shrink-0">
+                                {item.week}
+                            </div>
+                            <div>
+                                <h3 className="text-base font-bold text-slate-900 font-display">
+                                    {item.title}
+                                </h3>
+                                <p className="text-xs text-slate-500 font-medium">{item.focus}</p>
+                            </div>
                         </div>
-                    </div>                   
-                </div>
+
+                        <div className="border-t border-slate-100 pt-3.5 space-y-2.5">
+                            {item.tasks.map((task, i) => (
+                                <div key={i} className="flex items-start gap-2.5">
+                                    <div className="w-4 h-4 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+                                        ✓
+                                    </div>
+                                    <p className="text-xs text-slate-700 leading-snug">{task}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 ))}
             </div>
-            </section>
 
-            <div className="flex justify-end mt-4 mb-4">
-                <button onClick={() => navigate("/rencana")}
-                    className="bg-gradient-to-r from-[#4C1D95] to-[#A78BFA] text-white px-14 py-3 rounded-xl font-semibold shadow-lg hover:opacity-90 transition">
-                        🚀 Mulai Program
+            <div className="flex justify-end pt-2">
+                <button
+                    onClick={() => navigate("/rencana")}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow-md hover:bg-emerald-700 transition"
+                >
+                    <span>Kembali ke Pelacak 90 Hari</span>
+                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                 </button>
             </div>
         </div>

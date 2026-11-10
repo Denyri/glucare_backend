@@ -1,134 +1,107 @@
-import Button from './Button';
 import { useNavigate } from "react-router-dom";
-import LogoIlmiah from "../assets/FaseIntervensi/DasarIlmiah.png";
-import LogoGula from "../assets/FaseIntervensi/Gula.png";
-import LogoMakanan from "../assets/FaseIntervensi/LogMakanan.png";
-import LogoWaktu from "../assets/FaseIntervensi/Waktu.png";
-import LogoMinuman from "../assets/FaseIntervensi/Minuman.png";
-
 
 export default function OptimasiMingguan() {
     const navigate = useNavigate();
 
-    const targets = [
+    const weeks = [
         {
-        title: "Gula Harian",
-        value: "< 40g/hari",
-        desc: "Kurangi bertahap dari kebiasaan",
-        icon : "🍬"
+            week: "W5",
+            title: "Minggu 5: Pengenalan Beban Fungsional",
+            focus: "Menstimulasi GLUT4 otot tanpa membebani persendian",
+            tasks: [
+                "Lakukan 2 sesi latihan beban tubuh (bodyweight squat & wall push-up) 15 menit",
+                "Turunkan batas karbohidrat olahan menjadi ≤ 30g per hari",
+                "Pastikan kecukupan protein 1.0–1.2 g/kg berat badan untuk pemulihan otot",
+                "Pantau apakah ada rasa lapar berlebih pasca latihan",
+            ],
         },
         {
-        title: "Aktivitas",
-        value: "150 menit/minggu",
-        desc: "Kurangi 10g dari fase sebelumnya",
-        icon: "🏃‍♂️"
-        
+            week: "W6",
+            title: "Minggu 6: Integrasi Post-Prandial Walking",
+            focus: "Mencegah hiperglikemia pasca-makan besar",
+            tasks: [
+                "Lakukan jalan kaki 15 menit tepat setelah makan siang dan makan malam",
+                "Ganti camilan manis dengan kacang-kacangan tinggi magnesium (almond, kenari)",
+                "Penuhi hidrasi minimal 2.5 liter air mineral per hari",
+                "Catat skor energi pada modul harian",
+            ],
         },
         {
-        title: "Tidur",
-        value: "7 jam/malam",
-        desc: "Jadwal tidur konsisten",
-        icon: "😴"
+            week: "W7",
+            title: "Minggu 7: Eksplorasi Serat Prebiotik",
+            focus: "Memperkuat mikrobiota usus dan penyerapan lambat",
+            tasks: [
+                "Konsumsi minimal 30g serat total (sayuran hijau, biji chia, apel dengan kulit)",
+                "Cek kadar glukosa darah puasa (GDP) berkala hari ke-45",
+                "Pertahankan konsistensi tidur 7.5 jam di ruang yang gelap dan sejuk",
+                "Tingkatkan repetisi latihan beban tubuh secara perlahan",
+            ],
         },
         {
-        title: "Air Putih",
-        value: "8 gelas/hari",
-        desc: "Hidrasi optimal untuk metabolisme",
-        icon: "💧"
+            week: "W8",
+            title: "Minggu 8: Evaluasi Tengah Program (Hari ke-60)",
+            focus: "Menilai adaptasi metabolik sebelum fase konsolidasi",
+            tasks: [
+                "Ukur lingkar pinggang dan bandingkan dengan baseline",
+                "Lakukan evaluasi glukosa puasa 60 hari",
+                "Review kepatuhan dan pelajari strategi menghadapi situasi sosial",
+                "Siapkan mental untuk mengunci hasil di Fase 3",
+            ],
         },
-    ];
-
-    const focusItems = [
-        {
-            title : "Stop Minuman Manis",
-            desc : "↓ 40% spike gula", 
-            color : "text-[#059669]",
-            icon : LogoMinuman,    
-        },
-        {
-            title : "Stop Makanan Manis",
-            desc : "↓ 26% spike gula",
-            color : "text-[#0072CE]",
-            icon : LogoGula, 
-        },
-        {
-            title : "Konsisten Waktu Makan",
-            desc : "↑ Ritme insulin",
-            color : "text-[#7C3AED]",
-            icon : LogoWaktu, 
-        },
-        {
-            title : "Log Makanan Harian",
-            desc : "↑Kesadaran pola makan",
-            color : "text-[#D97706]",
-            icon : LogoMakanan,
-        }
     ];
 
     return (
-        <div>
-
-            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 mb-6">
-            <div className="flex gap-4 items-start">
-                <img src={LogoIlmiah} alt ="Dasar Ilmiah" className="w-10 h-10 object-contain"/>
-                <div>
-                <h2 className="text-lg font-semibold text-[#7C3AED]">
-                    Dasar Ilmiah Fase 2
-                </h2>
-
-                <p className="text-[#374151] mt-2 text-sm">
-                    Di fase ini, tubuh sudah memiliki fondasi. 
-                    Kita tingkatkan intensitas untuk memaksimalkan GLUT4 (transporter glukosa) di otot rangka. 
-                    Latihan kekuatan 2x/minggu meningkatkan penyerapan glukosa otot hingga 35% (JCEM, 2022).
-                </p>
+        <div className="space-y-6">
+            {/* Tips Card */}
+            <div className="bg-purple-50/70 border border-purple-200/80 rounded-2xl p-5 sm:p-6">
+                <div className="flex items-start gap-3">
+                    <span className="material-symbols-outlined text-purple-600 text-[22px] mt-0.5">fitness_center</span>
+                    <div>
+                        <h4 className="font-bold text-slate-800 text-sm">Prinsip Fisiologis: Kontraksi Otot Non-Insulin</h4>
+                        <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                            Saat otot berkontraksi dalam latihan beban atau jalan santai, transporter glukosa (GLUT4) bergerak ke membran sel secara langsung <strong>tanpa memerlukan hormon insulin</strong>. Ini adalah cara tercepat membersihkan kelebihan glukosa dalam sirkulasi darah.
+                        </p>
+                    </div>
                 </div>
             </div>
-            </div>
 
-            <section className="mb-8">
-            <h3 className="font-semibold text-slate-800 mb-4">Target Harian</h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 text-xs">
-                {targets.map((item, index) => (
-                <div
-                    key={index}
-                    className="bg-white rounded-2xl shadow-sm border p-5"
-                >
-                    <div className="text-3xl mb-3">{item.icon}</div>
-                    <h4 className="font-medium text-slate-700">{item.title}</h4>
-                    <p className="text-xl font-bold mt-2">{item.value}</p>
-                    <p className="text-xs text-slate-500 mt-2">{item.desc}</p>
-                </div>
-                ))}
-            </div>
-            </section>
-
-            <section>
-            <h3 className="font-semibold text-slate-800 mb-4">Fokus Utama</h3>
-
-            <div className="space-y-4 font-bold">
-                {focusItems.map((item, index) => (
-                <div
-                    key={index}
-                    className="bg-white rounded-xl border shadow-sm px-5 py-4 flex justify-between items-center"
-                >
-                    <div className="flex items-center gap-3">
-                        <img src={item.icon} alt={item.title} className="w-8 h-8 object-contain"/>
-
-                        <div>
-                            <p className="text-sm font-bold text-black"> {item.title} </p>
-                            <span className={`text-xs ${item.color}`}> {item.desc} </span>
+            {/* 4 Weekly Roadmap Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {weeks.map((item, index) => (
+                    <div key={index} className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-sm hover:border-purple-300 transition">
+                        <div className="flex items-center gap-3.5 mb-3">
+                            <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 font-mono font-bold text-sm flex items-center justify-center border border-purple-100 shrink-0">
+                                {item.week}
+                            </div>
+                            <div>
+                                <h3 className="text-base font-bold text-slate-900 font-display">
+                                    {item.title}
+                                </h3>
+                                <p className="text-xs text-slate-500 font-medium">{item.focus}</p>
+                            </div>
                         </div>
-                    </div>                   
-                </div>
+
+                        <div className="border-t border-slate-100 pt-3.5 space-y-2.5">
+                            {item.tasks.map((task, i) => (
+                                <div key={i} className="flex items-start gap-2.5">
+                                    <div className="w-4 h-4 rounded-full bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center text-[10px] shrink-0 mt-0.5">
+                                        ✓
+                                    </div>
+                                    <p className="text-xs text-slate-700 leading-snug">{task}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 ))}
             </div>
-            </section>
 
-            <div className="flex justify-end mt-4 mb-4">
-                <button onClick={() => navigate("/rencana")}
-                    className="bg-gradient-to-r from-[#4C1D95] to-[#A78BFA] text-white px-14 py-3 rounded-xl font-semibold shadow-lg hover:opacity-90 transition">
-                        🚀 Mulai Program
+            <div className="flex justify-end pt-2">
+                <button
+                    onClick={() => navigate("/rencana")}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-purple-600 text-white font-bold text-xs shadow-md hover:bg-purple-700 transition"
+                >
+                    <span>Kembali ke Pelacak 90 Hari</span>
+                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                 </button>
             </div>
         </div>

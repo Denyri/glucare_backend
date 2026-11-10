@@ -1,133 +1,144 @@
 import { useNavigate } from "react-router-dom";
-import LogoIlmiah from "../assets/FaseIntervensi/DasarIlmiah.png";
-import LogoGula from "../assets/FaseIntervensi/Gula.png";
-import LogoMakanan from "../assets/FaseIntervensi/LogMakanan.png";
-import LogoWaktu from "../assets/FaseIntervensi/Waktu.png";
-import LogoMinuman from "../assets/FaseIntervensi/Minuman.png";
-
 
 export default function KonsolidasiRingkasan() {
     const navigate = useNavigate();
 
     const targets = [
         {
-        title: "Gula Harian",
-        value: "< 40g/hari",
-        desc: "Kurangi bertahap dari kebiasaan",
-        icon : "🍬"
+            title: "Batas Gula Harian",
+            value: "≤ 25g / hari",
+            desc: "Standar WHO: < 5% dari total asupan energi harian",
+            icon: "verified",
+            color: "text-emerald-600 bg-emerald-50"
         },
         {
-        title: "Aktivitas",
-        value: "150 menit/minggu",
-        desc: "Kurangi 10g dari fase sebelumnya",
-        icon: "🏃‍♂️"
-        
+            title: "Aktivitas Permanen",
+            value: "250 menit / mgg",
+            desc: "Gaya hidup aktif terintegrasi secara alami seumur hidup",
+            icon: "directions_run",
+            color: "text-blue-600 bg-blue-50"
         },
         {
-        title: "Tidur",
-        value: "7 jam/malam",
-        desc: "Jadwal tidur konsisten",
-        icon: "😴"
+            title: "Tidur Restoratif",
+            value: "8.0 jam / malam",
+            desc: "Ritme sirkadian stabil mencegah lonjakan glukosa hepar",
+            icon: "bedtime",
+            color: "text-indigo-600 bg-indigo-50"
         },
         {
-        title: "Air Putih",
-        value: "8 gelas/hari",
-        desc: "Hidrasi optimal untuk metabolisme",
-        icon: "💧"
+            title: "Pemantauan Mandiri",
+            value: "1x per 14 hari",
+            desc: "Pengecekan berkala untuk deteksi dini variabilitas glukosa",
+            icon: "monitor_heart",
+            color: "text-rose-600 bg-rose-50"
         },
     ];
 
     const focusItems = [
         {
-            title : "Stop Minuman Manis",
-            desc : "↓ 40% spike gula", 
-            color : "text-[#059669]",
-            icon : LogoMinuman,    
+            title: "Membangun Fleksibilitas Metabolik",
+            desc: "Kemampuan tubuh beralih mulus antara membakar karbohidrat dan membakar asam lemak tanpa 'sugar crash'",
+            tag: "Metabolic Flexibility",
+            color: "text-emerald-700 bg-emerald-50 border-emerald-200",
+            icon: "all_inclusive"
         },
         {
-            title : "Stop Makanan Manis",
-            desc : "↓ 26% spike gula",
-            color : "text-[#0072CE]",
-            icon : LogoGula, 
+            title: "Protokol Makan di Luar & Acara Sosial",
+            desc: "Strategi memilih urutan santapan: serat dulu, lalu protein/lemak, dan karbohidrat di akhir (Food Sequencing)",
+            tag: "Food Sequencing",
+            color: "text-blue-700 bg-blue-50 border-blue-200",
+            icon: "restaurant"
         },
         {
-            title : "Konsisten Waktu Makan",
-            desc : "↑ Ritme insulin",
-            color : "text-[#7C3AED]",
-            icon : LogoWaktu, 
+            title: "Regulasi Stres & Penurunan Hormon Kortisol",
+            desc: "Stres psikologis kronis memicu glukoneogenesis hepar tak terkendali. Lakukan latihan napas 4-7-8 harian",
+            tag: "Kortisol Management",
+            color: "text-purple-700 bg-purple-50 border-purple-200",
+            icon: "self_improvement"
         },
         {
-            title : "Log Makanan Harian",
-            desc : "↑Kesadaran pola makan",
-            color : "text-[#D97706]",
-            icon : LogoMakanan,
+            title: "Rencana Pemeliharaan Mandiri Seumur Hidup",
+            desc: "Mengubah 90 hari intervensi menjadi identitas gaya hidup baru tanpa merasa terkekang atau tersiksa",
+            tag: "Habit Retention",
+            color: "text-teal-700 bg-teal-50 border-teal-200",
+            icon: "workspace_premium"
         }
     ];
 
     return (
-        <div>
-
-            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 mb-6">
-            <div className="flex gap-4 items-start">
-                <img src={LogoIlmiah} alt ="Dasar Ilmiah" className="w-10 h-10 object-contain"/>
-                <div>
-                <h2 className="text-lg font-semibold text-[#7C3AED]">
-                    Dasar Ilmiah Fase 2
-                </h2>
-
-                <p className="text-[#374151] mt-2 text-sm">
-                    Di fase ini, tubuh sudah memiliki fondasi. 
-                    Kita tingkatkan intensitas untuk memaksimalkan GLUT4 (transporter glukosa) di otot rangka. 
-                    Latihan kekuatan 2x/minggu meningkatkan penyerapan glukosa otot hingga 35% (JCEM, 2022).
-                </p>
+        <div className="space-y-6">
+            {/* Clinical Evidence Card */}
+            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-100 rounded-2xl p-6 sm:p-7">
+                <div className="flex gap-4 items-start">
+                    <div className="w-11 h-11 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                        <span className="material-symbols-outlined text-[24px]">verified_user</span>
+                    </div>
+                    <div>
+                        <h2 className="text-base font-bold text-slate-900 font-display">
+                            Landasan Klinis Fase 3: Homeostasis & Proteksi Jangka Panjang
+                        </h2>
+                        <p className="text-slate-600 mt-1.5 text-xs sm:text-sm leading-relaxed">
+                            Fase ketiga bertujuan mengunci stabilitas metabolik baru ke dalam memori seluler. Studi tindak lanjut 10 tahun <em>DPP Outcomes Study (DPPOS)</em> membuktikan bahwa subjek yang berhasil mempertahankan kebiasaan sehat selama 90 hari memiliki insidensi diabetes tipe 2 yang <strong>34–58% lebih rendah</strong> dibanding kelompok kontrol secara persisten selama 1 dekade.
+                        </p>
+                    </div>
                 </div>
             </div>
-            </div>
 
-            <section className="mb-8">
-            <h3 className="font-semibold text-slate-800 mb-4">Target Harian</h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 text-xs">
-                {targets.map((item, index) => (
-                <div
-                    key={index}
-                    className="bg-white rounded-2xl shadow-sm border p-5"
-                >
-                    <div className="text-3xl mb-3">{item.icon}</div>
-                    <h4 className="font-medium text-slate-700">{item.title}</h4>
-                    <p className="text-xl font-bold mt-2">{item.value}</p>
-                    <p className="text-xs text-slate-500 mt-2">{item.desc}</p>
-                </div>
-                ))}
-            </div>
-            </section>
-
+            {/* Target Harian Grid */}
             <section>
-            <h3 className="font-semibold text-slate-800 mb-4">Fokus Utama</h3>
-
-            <div className="space-y-4 font-bold">
-                {focusItems.map((item, index) => (
-                <div
-                    key={index}
-                    className="bg-white rounded-xl border shadow-sm px-5 py-4 flex justify-between items-center"
-                >
-                    <div className="flex items-center gap-3">
-                        <img src={item.icon} alt={item.title} className="w-8 h-8 object-contain"/>
-
-                        <div>
-                            <p className="text-sm font-bold text-black"> {item.title} </p>
-                            <span className={`text-xs ${item.color}`}> {item.desc} </span>
+                <h3 className="font-bold font-display text-slate-900 mb-4 text-base">
+                    Target Protokol Fase 3
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {targets.map((item, index) => (
+                        <div key={index} className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm">
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center mb-3 ${item.color}`}>
+                                <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
+                            </div>
+                            <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">{item.title}</h4>
+                            <p className="text-lg font-black font-mono text-slate-900 mt-1 tabular-nums">{item.value}</p>
+                            <p className="text-xs text-slate-500 mt-1.5 leading-snug">{item.desc}</p>
                         </div>
-                    </div>                   
+                    ))}
                 </div>
-                ))}
-            </div>
             </section>
 
-            <div className="flex justify-end mt-4 mb-4">
-                <button onClick={() => navigate("/rencana")}
-                    className="bg-gradient-to-r from-[#4C1D95] to-[#A78BFA] text-white px-14 py-3 rounded-xl font-semibold shadow-lg hover:opacity-90 transition">
-                        🚀 Mulai Program
+            {/* 4 Pilar Fokus Utama */}
+            <section>
+                <h3 className="font-bold font-display text-slate-900 mb-4 text-base">
+                    Pilar Retensi & Konsolidasi
+                </h3>
+                <div className="space-y-3">
+                    {focusItems.map((item, index) => (
+                        <div
+                            key={index}
+                            className="bg-white rounded-2xl border border-slate-200/80 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm hover:border-emerald-300 transition"
+                        >
+                            <div className="flex items-start sm:items-center gap-3.5">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-100 shrink-0">
+                                    <span className="material-symbols-outlined text-[22px]">{item.icon}</span>
+                                </div>
+                                <div>
+                                    <h4 className="text-sm font-bold text-slate-800">{item.title}</h4>
+                                    <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
+                                </div>
+                            </div>
+                            <span className={`text-xs font-bold font-mono px-3 py-1 rounded-full border self-start sm:self-auto shrink-0 ${item.color}`}>
+                                {item.tag}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            {/* Bottom Actions */}
+            <div className="flex justify-end pt-2">
+                <button
+                    onClick={() => navigate("/rencana")}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition"
+                >
+                    <span>Lanjutkan ke Dasbor 90 Hari</span>
+                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                 </button>
             </div>
         </div>

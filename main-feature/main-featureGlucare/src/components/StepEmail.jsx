@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { FaLock } from "react-icons/fa";
-import api from "../api";
-
+import authService from "../services/authService";
 
 const StepEmail = ({ onSuccess }) => {
     const [email, setEmail] = useState('');
@@ -14,12 +13,12 @@ const StepEmail = ({ onSuccess }) => {
         setLoading(true);
 
         try {
-        await api.post('/api/auth/forgot-password', { email });
-        onSuccess(email);
+            await authService.forgotPassword(email);
+            onSuccess(email);
         } catch (err) {
-        setError(err.response?.data?.message || 'Terjadi kesalahan, coba lagi');
+            setError(err.response?.data?.message || 'Terjadi kesalahan, coba lagi');
         } finally {
-        setLoading(false);
+            setLoading(false);
         }
     };
 

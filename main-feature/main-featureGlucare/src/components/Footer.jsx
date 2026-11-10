@@ -1,90 +1,122 @@
-import rsLogo from "../assets/homeimages/rslogo.png";
-import whoLogo from "../assets/homeimages/whologo.png";
-import diabetesLogo from "../assets/homeimages/diabeteslogo.png";
-import kesehatanLogo from "../assets/homeimages/kesehatanlogo.png";
-import whatsappIcon from "../assets/homeimages/Whatsapp.svg";
-import instagramIcon from "../assets/homeimages/Instagram.svg";
-import facebookIcon from "../assets/homeimages/Facebook.svg";
-import discordIcon from "../assets/homeimages/Discord.svg";
+import { Link } from "react-router-dom";
+
+const footerLinks = {
+    Platform: [
+        { label: "Beranda", to: "/#beranda" },
+        { label: "Fitur Klinis AI", to: "/#fitur" },
+        { label: "Cara Kerja & Alur", to: "/#cara-kerja" },
+        { label: "Manfaat Terukur", to: "/#manfaat" },
+        { label: "Testimoni Pengguna", to: "/#testimoni" },
+    ],
+    Fitur: [
+        { label: "Mode Laboratorium", to: "/login" },
+        { label: "Kuesioner Cepat", to: "/login" },
+        { label: "Program 90 Hari", to: "/login" },
+        { label: "Bio-Habit Tracking", to: "/login" },
+    ],
+    Bantuan: [
+        { label: "Tanya Jawab (FAQ)", to: "/#faq" },
+        { label: "Pusat Bantuan", to: "/bantuan" },
+        { label: "Kebijakan Privasi", to: "/kebijakan" },
+    ],
+};
 
 export default function Footer() {
+    const handleAnchorClick = (e, to) => {
+        if (to.startsWith("/#")) {
+            const anchorId = to.replace("/#", "");
+            const el = document.getElementById(anchorId);
+            if (el) {
+                e.preventDefault();
+                el.scrollIntoView({ behavior: "smooth" });
+                window.history.pushState(null, "", to);
+            }
+        }
+    };
+
     return (
-        <footer className="bg-[#f5f7fa] px-5 py-[60px]">
-            {/* Top Links */}
-            <div className="max-w-[1100px] mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 md:gap-10">
-                <div>
-                    <h3 className="text-base mb-[10px] font-semibold">About Glucare</h3>
-                    <p className="text-[13px] text-[#555]">
-                        Take control of your diabetes risk and start living a healthier life.
+        <footer className="bg-slate-950 text-slate-300 pt-16 pb-12 border-t border-slate-800">
+            <div className="max-w-7xl mx-auto px-6 lg:px-10 space-y-12">
+                
+                {/* Top section */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10">
+                    
+                    {/* Brand Info (Span 5) */}
+                    <div className="lg:col-span-5 space-y-4">
+                        <Link to="/" className="flex items-center gap-2.5 w-fit group">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-700 via-blue-600 to-sky-400 flex items-center justify-center shadow-md">
+                                <img
+                                    src="/logo_glucare.png"
+                                    alt="GluCare"
+                                    className="w-5 h-5 filter brightness-0 invert"
+                                />
+                            </div>
+                            <span className="text-2xl font-heading font-extrabold text-white tracking-tight">
+                                GluCare<span className="text-blue-500">.</span>
+                            </span>
+                        </Link>
+
+                        <p className="font-body font-normal text-slate-400 text-sm leading-relaxed max-w-sm">
+                            Platform pencegahan metabolik & deteksi dini prediabetes untuk usia dewasa muda (20–40 tahun) berbasis model prediktif NHANES 2021–2023 CDC dan protokol 90 hari.
+                        </p>
+
+                        <div className="pt-2 flex items-center gap-2 text-xs font-subheading font-semibold text-slate-400">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                            <span>Sistem Operasional & Layanan AI Aktif</span>
+                        </div>
+                    </div>
+
+                    {/* Navigation Columns (Span 7) */}
+                    <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-8">
+                        {Object.entries(footerLinks).map(([title, links]) => (
+                            <div key={title} className="space-y-3">
+                                <h4 className="text-xs font-subheading font-semibold uppercase tracking-wider text-white">
+                                    {title}
+                                </h4>
+                                <ul className="space-y-2 list-none">
+                                    {links.map((link) => (
+                                        <li key={link.label}>
+                                            <Link
+                                                to={link.to}
+                                                onClick={(e) => handleAnchorClick(e, link.to)}
+                                                className="text-sm font-body font-normal text-slate-400 hover:text-white transition-colors duration-200"
+                                            >
+                                                {link.label}
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        ))}
+                    </div>
+
+                </div>
+
+                {/* Medical Disclaimer Banner */}
+                <div className="p-4.5 rounded-2xl bg-slate-900/90 border border-slate-800 text-xs text-slate-400 leading-relaxed space-y-1">
+                    <div className="font-bold text-slate-300 flex items-center gap-1.5">
+                        <span>⚖️ Penafian Medis (Medical Disclaimer):</span>
+                    </div>
+                    <p>
+                        GluCare adalah alat bantu skrining risiko awal dan pendamping intervensi gaya hidup mandiri. Estimasi model AI tidak dimaksudkan sebagai pengganti diagnosis definitif, resep medis, atau pemeriksaan dokter spesialis. Jika Anda mengalami gejala hiperglikemia akut, segera hubungi fasilitas layanan kesehatan terdekat.
                     </p>
                 </div>
 
-                <div>
-                    <h3 className="text-base mb-[10px] font-semibold">Resource Center</h3>
-                    <ul className="list-none">
-                        <li className="mb-[6px]"><a href="#" className="text-[13px] text-[#555] hover:text-[#0072CE]">Case Studies</a></li>
-                        <li className="mb-[6px]"><a href="#" className="text-[13px] text-[#555] hover:text-[#0072CE]">Articles</a></li>
-                        <li className="mb-[6px]"><a href="#" className="text-[13px] text-[#555] hover:text-[#0072CE]">Interview</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 className="text-base mb-[10px] font-semibold">Support</h3>
-                    <ul className="list-none">
-                        <li className="mb-[6px]"><a href="#" className="text-[13px] text-[#555] hover:text-[#0072CE]">Help Center</a></li>
-                        <li className="mb-[6px]"><a href="#" className="text-[13px] text-[#555] hover:text-[#0072CE]">Contact Us</a></li>
-                        <li className="mb-[6px]"><a href="#" className="text-[13px] text-[#555] hover:text-[#0072CE]">Registration</a></li>
-                        <li className="mb-[6px]"><a href="#faq" className="text-[13px] text-[#555] hover:text-[#0072CE]">FAQ</a></li>
-                        <li className="mb-[6px]"><a href="#" className="text-[13px] text-[#555] hover:text-[#0072CE]">Log</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            {/* Partner Logos */}
-            <div className="max-w-[1100px] mx-auto flex flex-wrap gap-[20px] sm:gap-[25px] my-[30px]">
-                <img src={rsLogo} alt="RS" className="h-10 object-contain" />
-                <img src={whoLogo} alt="WHO" className="h-10 object-contain" />
-                <img src={diabetesLogo} alt="Diabetes" className="h-10 object-contain" />
-                <img src={kesehatanLogo} alt="Kesehatan" className="h-10 object-contain" />
-            </div>
-
-            {/* Bottom Bar */}
-            <div className="max-w-[1100px] mx-auto flex flex-col sm:flex-row justify-between items-start gap-6">
-                <div className="max-w-[500px]">
-                    <div className="flex items-center gap-2 text-[#0072CE] mb-[10px]">
-                        <img src="/logo_glucare.png" alt="Glucare" className="w-[25px]" />
-                        <span>GluCare</span>
-                    </div>
-
-                    <div className="flex flex-wrap gap-[10px] mb-[10px]">
-                        <a href="#" className="text-xs text-[#555] hover:text-[#0072CE]">Privacy & Policy</a>
-                        <a href="#" className="text-xs text-[#555] hover:text-[#0072CE]">Terms & Conditions</a>
-                        <a href="#" className="text-xs text-[#555] hover:text-[#0072CE]">Help</a>
-                        <a href="#" className="text-xs text-[#555] hover:text-[#0072CE]">Language help</a>
-                        <a href="#" className="text-xs text-[#555] hover:text-[#0072CE]">Glucare App</a>
-                    </div>
-
-                    <p className="text-xs text-[#666]">
-                        GluCare is an AI application for early detection and intervention in
-                        the pre-diabetes phase for individuals aged 20–40.
+                {/* Bottom Bar */}
+                <div className="pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+                    <p>
+                        © {new Date().getFullYear()} GluCare Health Technologies. Hak cipta dilindungi.
                     </p>
+                    <div className="flex items-center gap-6">
+                        <Link to="/privasi-layanan" className="hover:text-slate-300 transition-colors">
+                            Kebijakan Privasi
+                        </Link>
+                        <Link to="/bantuan-dan-dukungan" className="hover:text-slate-300 transition-colors">
+                            Bantuan & Syarat Layanan
+                        </Link>
+                    </div>
                 </div>
 
-                {/* Social Icons */}
-                <div className="flex gap-3">
-                    <a href="https://wa.me/number" target="_blank">
-                        <img src={whatsappIcon} alt="Whatsapp" className="w-7 transition duration-300 hover:scale-110" />
-                    </a>
-                    <a href="https://instagram.com/username" target="_blank">
-                        <img src={instagramIcon} alt="Instagram" className="w-7 transition duration-300 hover:scale-110" />
-                    </a>
-                    <a href="https://facebook.com/page" target="_blank">
-                        <img src={facebookIcon} alt="Facebook" className="w-7 transition duration-300 hover:scale-110" />
-                    </a>
-                    <a href="https://discord.com" target="_blank">
-                        <img src={discordIcon} alt="Discord" className="w-7 transition duration-300 hover:scale-110" />
-                    </a>
-                </div>
             </div>
         </footer>
     );

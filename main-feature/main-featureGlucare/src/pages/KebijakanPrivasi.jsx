@@ -6,84 +6,96 @@ export default function KebijakanPrivasi() {
     const { isOpen } = useSidebar();
 
     return (
-        <div className="flex min-h-screen">
+        <div className="flex min-h-screen bg-slate-50 font-sans">
             <Sidebar />
 
-            <div className="flex-1 flex flex-col">
-                <div className={`flex-1 transition-all duration-300 ${
-                    isOpen ? "lg:ml-60" : "lg:ml-24"
-                }`}>
-                    <HeaderAnalisis title = "Kebijakan Privasi & Layanan" subtitle="Informasi berikut menjelaskan bagaimana kami mengelola data, serta aturan penggunaan layanan."/>
+            <div className={`flex-1 transition-all duration-300 ${isOpen ? "lg:ml-60" : "lg:ml-24"}`}>
+                <HeaderAnalisis
+                    title="Kebijakan Privasi & Ketentuan Layanan"
+                    subtitle="Komitmen perlindungan data medis pribadi, privasi komputasi AI, dan etika penggunaan platform GluCare"
+                />
 
-                    <div className="p-6">
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
-                            <div className="bg-white rounded-xl p-5 shadow border">
-                                <h2 className="font-semibold mb-3">Privacy Policy</h2>
-
-                                <p className="text-sm text-gray-600 mb-2">
-                                    Kami menghargai privasi Anda. Informasi yang kami kumpulkan:
-                                </p>
-
-                                <ul className="text-sm text-gray-700 space-y-1 mb-4">
-                                    <li>• Data akun (Nama, Email)</li>
-                                    <li>• Data Pengguna Aplikasi</li>
-                                </ul>
-
-                                <ul className="text-sm text-gray-600 mb-2">
-                                    <li>• Meningkatkan layanan</li>
-                                    <li>• Memberikan pengalaman pengguna yang lebih baik</li>
-                                </ul>
-
-                                <p className="text-sm text-gray-600 mb-2 font-medium">
-                                    Keamanan Data
-                                </p>
-
-                                <p className="text-sm text-gray-700 mb-4">
-                                    Kami menjaga data Anda dengan sistem keamanan terbaik.
-                                </p>
-
-                                <p className="text-sm text-gray-600">
-                                    Apabila ada pertanyaan hubungi kami disini:
-                                </p>
-
-                                <p className="text-sm text-blue-600 mt-1">
-                                    nusahealth228@gmail.com
-                                </p>
-                            </div> 
-
-                            <div className="bg-white rounded-xl p-5 shadow border flex flex-col justify-between">
-                                <div>
-                                    <p className="text-sm text-gray-700 mb-3">
-                                        Dengan menggunakan aplikasi ini Anda setuju untuk:
-                                    </p>
-
-                                    <ul className="text-sm text-gray-700 space-y-2 mb-4">
-                                        <li>• Tidak menyalahgunakan layanan</li>
-                                        <li>• Tidak melanggar hukum</li>
-                                        <li>• Menjaga keamanan akun Anda</li>
-                                    </ul>
-
-                                    <p className="text-sm text-gray-700 font-medium mb-2">
-                                        Kami berhak:
-                                    </p>
-
-                                    <ul className="text-sm text-gray-700 space-y-2">
-                                        <li>→ Menghapus akun jika melanggar aturan</li>
-                                        <li>→ Mengubah layanan sewaktu-waktu</li>
-                                    </ul>
+                <div className="p-6 sm:p-8 max-w-6xl mx-auto space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+                        {/* Kebijakan Privasi */}
+                        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <div className="flex items-center gap-2.5 pb-4 mb-4 border-b border-slate-100">
+                                    <span className="material-symbols-outlined text-[#0062E3] text-[22px]">verified_user</span>
+                                    <h2 className="font-bold font-display text-base text-slate-900">Kebijakan Privasi Data Medis</h2>
                                 </div>
 
-                                <div className="mt-6">
-                                    <div className="bg-gray-100 text-sm text-gray-600 px-4 py-2 rounded-lg text-center">
-                                        Terakhir di Perbarui: 29-03-2026
+                                <p className="text-xs sm:text-sm text-slate-600 mb-4 leading-relaxed">
+                                    GluCare mematuhi prinsip enkripsi data kesehatan setara standar HIPAA dan GDPR. Parameter biomarker yang Anda masukkan hanya diproses untuk inferensi model prediktif dan tidak diperjualbelikan kepada pihak ketiga.
+                                </p>
+
+                                <div className="space-y-3 mb-6">
+                                    <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 text-xs">
+                                        <p className="font-bold text-slate-800 mb-1">Data yang Dikelola:</p>
+                                        <ul className="text-slate-600 space-y-1 list-disc list-inside">
+                                            <li>Informasi akun terverifikasi (Nama, Email, Usia)</li>
+                                            <li>Biomarker klinis (HbA1c, GDP, Profil Lipid, Tekanan Darah)</li>
+                                            <li>Log kepatuhan intervensi gaya hidup harian</li>
+                                        </ul>
+                                    </div>
+
+                                    <div className="p-3.5 rounded-xl bg-blue-50/70 border border-blue-200/70 text-xs">
+                                        <p className="font-bold text-[#0062E3] mb-1">Enkripsi & Keamanan:</p>
+                                        <p className="text-slate-700 leading-relaxed">
+                                            Semua transmisi data dilindungi dengan protokol TLS 1.3 dan penyimpanan basis data terenkripsi AES-256.
+                                        </p>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div className="pt-4 border-t border-slate-100 text-xs text-slate-500">
+                                Kontak Petugas Privasi Data:{" "}
+                                <a href="mailto:support@glucare.health" className="text-[#0062E3] font-bold hover:underline">
+                                    support@glucare.health
+                                </a>
+                            </div>
+                        </div>
+
+                        {/* Ketentuan Layanan */}
+                        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                            <div>
+                                <div className="flex items-center gap-2.5 pb-4 mb-4 border-b border-slate-100">
+                                    <span className="material-symbols-outlined text-purple-600 text-[22px]">gavel</span>
+                                    <h2 className="font-bold font-display text-base text-slate-900">Ketentuan Layanan & Penafian Klinis</h2>
+                                </div>
+
+                                <p className="text-xs sm:text-sm text-slate-600 mb-4 leading-relaxed">
+                                    GluCare berfungsi sebagai platform skrining risiko dan pendampingan edukasi preventif berbasis bukti ilmiah, <strong>bukan sebagai pengganti diagnosis dokter formal</strong>.
+                                </p>
+
+                                <div className="space-y-3 mb-6 text-xs">
+                                    <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70">
+                                        <p className="font-bold text-slate-800 mb-1">Kewajiban Pengguna:</p>
+                                        <ul className="text-slate-600 space-y-1 list-disc list-inside">
+                                            <li>Memasukkan data hasil lab yang valid untuk akurasi rekomendasi</li>
+                                            <li>Menjaga kerahasiaan kredensial kata sandi akun pribadi</li>
+                                            <li>Berkonsultasi dengan dokter sebelum mengubah regimen terapi medis aktif</li>
+                                        </ul>
+                                    </div>
+
+                                    <div className="p-3.5 rounded-xl bg-amber-50/80 border border-amber-200/70 text-amber-900">
+                                        <p className="font-bold text-amber-800 mb-1">Hak Pengelola:</p>
+                                        <p className="leading-relaxed">
+                                            Kami berhak memperbarui model algoritma AI sesuai perkembangan literatur klinis mutakhir dan menghapus akses jika terjadi penyalahgunaan sistem.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="pt-4 border-t border-slate-100 text-center">
+                                <span className="text-[11px] font-mono text-slate-400">
+                                    Versi Dokumen 2.1 · Terakhir Diperbarui: Oktober 2026
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 }

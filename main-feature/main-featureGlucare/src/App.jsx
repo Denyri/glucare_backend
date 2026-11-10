@@ -5,7 +5,7 @@ import Analisis from './pages/Analisis';
 import Kuesioner from './pages/Kuesioner';
 import ModeLab from './pages/ModeLab';
 import HasilAnalisis from './pages/HasilAnalisis';
-import Rencana90Hari from './pages/Rencana90-Hari';
+import Rencana90Hari from './pages/Rencana90Hari';
 import Evaluasi from './pages/Evaluasi';
 import Pencapaian from './pages/Pencapaian';
 import SettingAndProfile from './pages/SettingAndProfile';
@@ -14,10 +14,6 @@ import BantuandanDukungan from './pages/BantuandanDukungan';
 import KebijakanPrivasi from './pages/KebijakanPrivasi';
 import UbahPassword from './pages/UbahPassword';
 import WelcomePage from './pages/WelcomePage';
-import Tentang from './pages/Tentang';
-import FiturUtama from './pages/FiturUtama';
-import CaraKerja from './pages/CaraKerja';
-import HubungiKami from './pages/HubungiKami';
 import Auth from './pages/Auth';
 import InputData from './pages/InputData';
 import StabilisasiDasar from './pages/StabilisasiDasar';
@@ -38,10 +34,6 @@ function App() {
       <Routes>
         <Route element={<PublicRoute />}>
           <Route path='/' element={<WelcomePage />} />
-          <Route path='/tentang' element={<Tentang />}/>
-          <Route path='/fitur' element={<FiturUtama />}/>
-          <Route path='/cara-kerja' element={<CaraKerja />}/>
-          <Route path='/hubungi'element={<HubungiKami />}/>
           <Route path='/login' element={<Auth />}/>
           <Route path='/forgot-password' element={<ForgotPassword />}/>
         </Route>

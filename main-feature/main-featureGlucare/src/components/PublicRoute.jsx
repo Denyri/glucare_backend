@@ -1,8 +1,21 @@
-import { Navigate, Outlet } from 'react-router-dom';
+import React from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const PublicRoute = () => {
-  const user = localStorage.getItem("currentUser") || sessionStorage.getItem("currentUser");
-  return user ? <Navigate to="/beranda" replace /> : <Outlet />;
+    const { isAuthenticated, isCompleted, hasAnalysis } = useAuth();
+
+    if (isAuthenticated) {
+        if (!isCompleted) {
+            return <Navigate to="/input" replace />;
+        }
+        if (!hasAnalysis) {
+            return <Navigate to="/analisis" replace />;
+        }
+        return <Navigate to="/beranda" replace />;
+    }
+
+    return <Outlet />;
 };
 
 export default PublicRoute;

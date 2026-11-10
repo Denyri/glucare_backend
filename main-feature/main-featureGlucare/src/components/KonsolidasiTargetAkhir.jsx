@@ -1,133 +1,116 @@
 import { useNavigate } from "react-router-dom";
-import LogoIlmiah from "../assets/FaseIntervensi/DasarIlmiah.png";
-import LogoGula from "../assets/FaseIntervensi/Gula.png";
-import LogoMakanan from "../assets/FaseIntervensi/LogMakanan.png";
-import LogoWaktu from "../assets/FaseIntervensi/Waktu.png";
-import LogoMinuman from "../assets/FaseIntervensi/Minuman.png";
-
 
 export default function KonsolidasiTargetAkhir() {
     const navigate = useNavigate();
 
     const targets = [
-        {
-        title: "Gula Harian",
-        value: "< 40g/hari",
-        desc: "Kurangi bertahap dari kebiasaan",
-        icon : "🍬"
-        },
-        {
-        title: "Aktivitas",
-        value: "150 menit/minggu",
-        desc: "Kurangi 10g dari fase sebelumnya",
-        icon: "🏃‍♂️"
-        
-        },
-        {
-        title: "Tidur",
-        value: "7 jam/malam",
-        desc: "Jadwal tidur konsisten",
-        icon: "😴"
-        },
-        {
-        title: "Air Putih",
-        value: "8 gelas/hari",
-        desc: "Hidrasi optimal untuk metabolisme",
-        icon: "💧"
-        },
+        { label: "Gula Darah Puasa (GDP)", target: "< 100 mg/dL", note: "Zona Normal Standar Klinis ADA" },
+        { label: "Estimasi HbA1c", target: "< 5.7%", note: "Bebas dari kategori risiko Prediabetes" },
+        { label: "Aktivitas Fisik Berkelanjutan", target: "250 menit/minggu", note: "Menjadi kebiasaan otomatis tanpa paksaan" },
+        { label: "Retensi Gaya Hidup", target: "100% Otonom", note: "Rencana pemeliharaan mandiri seumur hidup" },
     ];
 
-    const focusItems = [
+    const phases = [
         {
-            title : "Stop Minuman Manis",
-            desc : "↓ 40% spike gula", 
-            color : "text-[#059669]",
-            icon : LogoMinuman,    
+            number: 1,
+            title: "Stabilisasi Dasar",
+            day: "Hari 1–30 · Gula ≤ 40g/hari",
+            active: false,
         },
         {
-            title : "Stop Makanan Manis",
-            desc : "↓ 26% spike gula",
-            color : "text-[#0072CE]",
-            icon : LogoGula, 
+            number: 2,
+            title: "Optimasi Metabolik",
+            day: "Hari 31–60 · Gula ≤ 30g/hari",
+            active: false,
         },
         {
-            title : "Konsisten Waktu Makan",
-            desc : "↑ Ritme insulin",
-            color : "text-[#7C3AED]",
-            icon : LogoWaktu, 
+            number: 3,
+            title: "Konsolidasi & Retensi",
+            day: "Hari 61–90 · Gula ≤ 25g/hari",
+            active: true,
         },
-        {
-            title : "Log Makanan Harian",
-            desc : "↑Kesadaran pola makan",
-            color : "text-[#D97706]",
-            icon : LogoMakanan,
-        }
     ];
 
     return (
-        <div>
-
-            <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 mb-6">
-            <div className="flex gap-4 items-start">
-                <img src={LogoIlmiah} alt ="Dasar Ilmiah" className="w-10 h-10 object-contain"/>
-                <div>
-                <h2 className="text-lg font-semibold text-[#7C3AED]">
-                    Dasar Ilmiah Fase 2
-                </h2>
-
-                <p className="text-[#374151] mt-2 text-sm">
-                    Di fase ini, tubuh sudah memiliki fondasi. 
-                    Kita tingkatkan intensitas untuk memaksimalkan GLUT4 (transporter glukosa) di otot rangka. 
-                    Latihan kekuatan 2x/minggu meningkatkan penyerapan glukosa otot hingga 35% (JCEM, 2022).
-                </p>
+        <div className="space-y-6">
+            {/* Target Akhir Fase 3 Card */}
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 sm:p-7">
+                <span className="text-[11px] font-mono font-bold text-slate-400 uppercase tracking-wider block mb-2">
+                    Milestone Puncak · Hari ke-90
+                </span>
+                <div className="flex items-center gap-3 mb-6">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                        <span className="material-symbols-outlined text-[22px]">workspace_premium</span>
+                    </div>
+                    <h2 className="text-xl font-bold font-display text-slate-900">
+                        Target Akhir Fase 3 (Puncak Program 90 Hari)
+                    </h2>
                 </div>
-            </div>
-            </div>
 
-            <section className="mb-8">
-            <h3 className="font-semibold text-slate-800 mb-4">Target Harian</h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 text-xs">
-                {targets.map((item, index) => (
-                <div
-                    key={index}
-                    className="bg-white rounded-2xl shadow-sm border p-5"
-                >
-                    <div className="text-3xl mb-3">{item.icon}</div>
-                    <h4 className="font-medium text-slate-700">{item.title}</h4>
-                    <p className="text-xl font-bold mt-2">{item.value}</p>
-                    <p className="text-xs text-slate-500 mt-2">{item.desc}</p>
-                </div>
-                ))}
-            </div>
-            </section>
-
-            <section>
-            <h3 className="font-semibold text-slate-800 mb-4">Fokus Utama</h3>
-
-            <div className="space-y-4 font-bold">
-                {focusItems.map((item, index) => (
-                <div
-                    key={index}
-                    className="bg-white rounded-xl border shadow-sm px-5 py-4 flex justify-between items-center"
-                >
-                    <div className="flex items-center gap-3">
-                        <img src={item.icon} alt={item.title} className="w-8 h-8 object-contain"/>
-
-                        <div>
-                            <p className="text-sm font-bold text-black"> {item.title} </p>
-                            <span className={`text-xs ${item.color}`}> {item.desc} </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {targets.map((item, index) => (
+                        <div key={index} className="bg-slate-50 border border-slate-200/80 rounded-xl p-4 flex items-start gap-3.5">
+                            <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-mono font-bold flex items-center justify-center shrink-0 mt-0.5">
+                                {index + 1}
+                            </div>
+                            <div>
+                                <h4 className="text-sm font-bold text-slate-800">{item.label}</h4>
+                                <p className="text-sm font-extrabold font-mono text-emerald-700 mt-0.5">{item.target}</p>
+                                <p className="text-xs text-slate-500 mt-0.5">{item.note}</p>
+                            </div>
                         </div>
-                    </div>                   
+                    ))}
                 </div>
-                ))}
             </div>
-            </section>
 
-            <div className="flex justify-end mt-4 mb-4">
-                <button onClick={() => navigate("/rencana")}
-                    className="bg-gradient-to-r from-[#4C1D95] to-[#A78BFA] text-white px-14 py-3 rounded-xl font-semibold shadow-lg hover:opacity-90 transition">
-                        🚀 Mulai Program
+            {/* Perjalanan 90 Hari Roadmap */}
+            <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 sm:p-7">
+                <h3 className="font-bold font-display text-slate-900 mb-6">
+                    Lintasan Lengkap Program 90 Hari
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {phases.map((phase) => (
+                        <div
+                            key={phase.number}
+                            className={`p-4 rounded-xl border transition-all ${
+                                phase.active
+                                    ? "bg-emerald-50/60 border-emerald-300 ring-1 ring-emerald-400/20"
+                                    : "bg-slate-50 border-slate-200 opacity-75"
+                            }`}
+                        >
+                            <div className="flex items-center gap-3 mb-2">
+                                <div
+                                    className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold font-mono ${
+                                        phase.active ? "bg-emerald-600 text-white" : "bg-slate-200 text-slate-600"
+                                    }`}
+                                >
+                                    {phase.number}
+                                </div>
+                                <h4 className="font-bold text-sm text-slate-800">{phase.title}</h4>
+                            </div>
+                            <p className="text-xs font-mono text-slate-500">{phase.day}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Navigasi & Evaluasi */}
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3 pt-2">
+                <button
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-xl text-xs font-bold transition"
+                    onClick={() => navigate("/optimasi")}
+                >
+                    <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+                    <span>Kembali ke Fase 2</span>
+                </button>
+
+                <button
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#0062E3] hover:bg-[#0052be] text-white rounded-xl text-sm font-bold shadow-md transition"
+                    onClick={() => navigate("/evaluasi")}
+                >
+                    <span>Buka Lembar Evaluasi Klinis Lengkap</span>
+                    <span className="material-symbols-outlined text-[18px]">assessment</span>
                 </button>
             </div>
         </div>

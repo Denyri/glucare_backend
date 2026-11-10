@@ -2,29 +2,45 @@ function AnalisisCard({ icon, title, description, tags, tagBg, tagText, footerTe
     return (
         <div
             onClick={onClick}
-            className="p-6 bg-white rounded-xl shadow cursor-pointer hover:shadow-lg hover:scale-[1.02] transition-all duration-300 group"
+            className="p-7 sm:p-8 bg-white rounded-3xl border border-slate-200/80 shadow-sm cursor-pointer hover:shadow-card hover:-translate-y-1 hover:border-blue-400 transition-all duration-300 group relative overflow-hidden flex flex-col justify-between"
         >
-            <img src={icon} alt={title} className="w-10 h-10 mb-4 object-contain" />
+            {/* Top decorative gradient glow */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 rounded-bl-full pointer-events-none group-hover:bg-blue-100/50 transition-colors"></div>
 
-            <h3 className="font-semibold text-lg mb-2 leading-tight">{title}</h3>
+            <div>
+                <div className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center p-2.5 mb-5 group-hover:scale-105 transition-transform">
+                    <img src={icon} alt={title} className="w-full h-full object-contain" />
+                </div>
 
-            <p className="text-sm text-gray-500 mb-3 leading-relaxed line-clamp-2">{description}</p>
+                <h3 className="font-bold font-display text-xl text-slate-900 mb-2 leading-tight group-hover:text-[#0062E3] transition-colors">
+                    {title}
+                </h3>
 
-            <div className="flex flex-wrap gap-2 mb-3">
-                {tags.map((tag, index) => (
-                    <span
-                        key={index}
-                        style={{ background: tagBg, color: tagText }}
-                        className="px-2 py-1 text-xs rounded font-semibold"
-                    >
-                        {tag}
-                    </span>
-                ))}
+                <p className="text-xs sm:text-sm text-slate-500 mb-5 leading-relaxed">
+                    {description}
+                </p>
+
+                <div className="flex flex-wrap gap-1.5 mb-6">
+                    {tags.map((tag, index) => (
+                        <span
+                            key={index}
+                            style={{ background: tagBg, color: tagText }}
+                            className="px-2.5 py-1 text-xs rounded-lg font-semibold font-mono border border-current/10"
+                        >
+                            {tag}
+                        </span>
+                    ))}
+                </div>
             </div>
 
-            <p style={{ color: footerColor }} className="font-semibold text-xs group-hover:scale-105 transition-transform">
-                {footerText}
-            </p>
+            <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <span style={{ color: footerColor }} className="font-bold text-xs">
+                    {footerText}
+                </span>
+                <span className="material-symbols-outlined text-slate-400 group-hover:text-[#0062E3] group-hover:translate-x-1 transition-all text-[20px]">
+                    arrow_forward
+                </span>
+            </div>
         </div>
     );
 }
