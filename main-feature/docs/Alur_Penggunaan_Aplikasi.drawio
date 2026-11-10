@@ -1,0 +1,171 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="alur-penggunaan" name="Alur Penggunaan Aplikasi">
+    <mxGraphModel dx="1200" dy="1400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="900" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <!-- Mulai -->
+        <mxCell id="start" value="Mulai" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="20" width="120" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- Registrasi / login -->
+        <mxCell id="login" value="Registrasi / login&lt;br&gt;(email atau akun Google)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="320" y="100" width="180" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Pilih metode -->
+        <mxCell id="metode" value="Memiliki hasil&lt;br&gt;pemeriksaan&lt;br&gt;laboratorium?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="330" y="190" width="160" height="100" as="geometry"/>
+        </mxCell>
+
+        <!-- Kuesioner -->
+        <mxCell id="kues" value="&lt;b&gt;Skrining Kuesioner&lt;/b&gt;&lt;br&gt;Mengisi kuesioner gaya hidup dan riwayat kesehatan" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="90" y="320" width="200" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- Klinis -->
+        <mxCell id="klinis" value="&lt;b&gt;Skrining Klinis&lt;/b&gt;&lt;br&gt;Memasukkan data pemeriksaan kesehatan (GDP, tekanan darah, HDL, dll.)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="530" y="320" width="200" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- Proses AI -->
+        <mxCell id="ai" value="Sistem memproses data&lt;br&gt;menggunakan model AI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="320" y="420" width="180" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Hasil -->
+        <mxCell id="hasil" value="&lt;b&gt;Hasil Skrining&lt;/b&gt;&lt;br&gt;Tingkat risiko, faktor risiko, dan saran tindak lanjut" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="310" y="505" width="200" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- Mulai program? -->
+        <mxCell id="ikut" value="Mengikuti&lt;br&gt;program&lt;br&gt;90 hari?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="340" y="600" width="140" height="95" as="geometry"/>
+        </mxCell>
+
+        <!-- Tidak ikut -->
+        <mxCell id="tidak" value="Melihat riwayat skrining dan melakukan skrining ulang secara berkala" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="560" y="615" width="200" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- Target awal -->
+        <mxCell id="target" value="Sistem menyusun target awal program&lt;br&gt;(tidur, jalan kaki, nutrisi)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="310" y="725" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Misi harian -->
+        <mxCell id="misi" value="&lt;b&gt;Mencatat misi harian&lt;/b&gt;&lt;br&gt;Tidur, jalan kaki, nutrisi, dan GDP (jika ada)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="310" y="810" width="200" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- Dashboard -->
+        <mxCell id="dash" value="Memantau progres di dashboard&lt;br&gt;dan menerima notifikasi pengingat" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="310" y="905" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Hari evaluasi? -->
+        <mxCell id="hari" value="Hari ke-30&lt;br&gt;atau ke-90?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="340" y="990" width="140" height="90" as="geometry"/>
+        </mxCell>
+
+        <!-- Evaluasi -->
+        <mxCell id="eval" value="&lt;b&gt;Evaluasi perkembangan&lt;/b&gt;&lt;br&gt;Sistem menampilkan ringkasan konsistensi kebiasaan" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="310" y="1110" width="200" height="65" as="geometry"/>
+        </mxCell>
+
+        <!-- Hari ke-90? -->
+        <mxCell id="h90" value="Hari ke-90?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="350" y="1205" width="120" height="80" as="geometry"/>
+        </mxCell>
+
+        <!-- Program selesai -->
+        <mxCell id="done" value="Program selesai, hasil akhir&lt;br&gt;dan riwayat tersimpan" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="310" y="1315" width="200" height="55" as="geometry"/>
+        </mxCell>
+
+        <!-- Selesai -->
+        <mxCell id="end" value="Selesai" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="1400" width="120" height="45" as="geometry"/>
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="e1" style="endArrow=classic;html=1;" edge="1" parent="1" source="start" target="login">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" style="endArrow=classic;html=1;" edge="1" parent="1" source="login" target="metode">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="Belum" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;fontSize=11;" edge="1" parent="1" source="metode" target="kues">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="190" y="240"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e4" value="Sudah" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;fontSize=11;" edge="1" parent="1" source="metode" target="klinis">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="630" y="240"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e5" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="kues" target="ai">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="190" y="447"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e6" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="klinis" target="ai">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="630" y="447"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e7" style="endArrow=classic;html=1;" edge="1" parent="1" source="ai" target="hasil">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e8" style="endArrow=classic;html=1;" edge="1" parent="1" source="hasil" target="ikut">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9" value="Tidak" style="endArrow=classic;html=1;fontSize=11;" edge="1" parent="1" source="ikut" target="tidak">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e9b" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;" edge="1" parent="1" source="tidak" target="end">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="660" y="1422"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e10" value="Ya" style="endArrow=classic;html=1;fontSize=11;" edge="1" parent="1" source="ikut" target="target">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e11" style="endArrow=classic;html=1;" edge="1" parent="1" source="target" target="misi">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e12" style="endArrow=classic;html=1;" edge="1" parent="1" source="misi" target="dash">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e13" style="endArrow=classic;html=1;" edge="1" parent="1" source="dash" target="hari">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e14" value="Belum&lt;br&gt;(hari berikutnya)" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;fontSize=11;" edge="1" parent="1" source="hari" target="misi">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="230" y="1035"/><mxPoint x="230" y="842"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e15" value="Ya" style="endArrow=classic;html=1;fontSize=11;" edge="1" parent="1" source="hari" target="eval">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e16" style="endArrow=classic;html=1;" edge="1" parent="1" source="eval" target="h90">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e17" value="Tidak (lanjut&lt;br&gt;program)" style="endArrow=classic;html=1;edgeStyle=orthogonalEdgeStyle;fontSize=11;" edge="1" parent="1" source="h90" target="misi">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="150" y="1245"/><mxPoint x="150" y="842"/></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e18" value="Ya" style="endArrow=classic;html=1;fontSize=11;" edge="1" parent="1" source="h90" target="done">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e19" style="endArrow=classic;html=1;" edge="1" parent="1" source="done" target="end">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
