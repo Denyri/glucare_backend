@@ -1,0 +1,40 @@
+{
+  "model_name": "Random Forest",
+  "cv_auc": 0.6546307971757102,
+  "test_auc": 0.652839892665474,
+  "n_train": 549,
+  "n_test": 138,
+  "features": [
+    "age_band",
+    "gender",
+    "bmi_category",
+    "waist_category",
+    "hypertension",
+    "diabetes_history",
+    "prediabetes_told",
+    "prediabetes_history",
+    "physically_active",
+    "sedentary_hours",
+    "current_smoker",
+    "poor_diet"
+  ],
+  "n_features": 12,
+  "trained_at": "2026-11-11T11:15:55.863434",
+  "all_cv_results": {
+    "Random Forest": {
+      "cv_auc_mean": 0.6546307971757102,
+      "cv_auc_std": 0.04321428492904904,
+      "cv_f1_mean": 0.5581429034827093
+    },
+    "XGBoost": {
+      "cv_auc_mean": 0.6317669856914133,
+      "cv_auc_std": 0.04351828381625205,
+      "cv_f1_mean": 0.4649628078904919
+    },
+    "LightGBM": {
+      "cv_auc_mean": 0.6133085524771944,
+      "cv_auc_std": 0.038886028361799385,
+      "cv_f1_mean": 0.49720697181797746
+    }
+  }
+}
