@@ -563,7 +563,7 @@ def load_models():
         q_artifact = joblib.load(QUESTIONNAIRE_MODEL_PATH)
         questionnaire_pipeline = q_artifact["pipeline"]
         questionnaire_features  = q_artifact["features"]
-        print(f"[OK] Questionnaire Model: {q_artifact.get('model_name', 'LR')} (AUC={q_artifact.get('cv_auc', 0):.3f}, {len(questionnaire_features)} features)")
+        print(f"[OK] Questionnaire Model: {q_artifact.get('model_name', 'RF')} (AUC={q_artifact.get('cv_auc', 0):.3f}, {len(questionnaire_features)} features)")
     else:
         print(f"[WARN] Questionnaire model not found at {QUESTIONNAIRE_MODEL_PATH} — will use fallback heuristic")
 
